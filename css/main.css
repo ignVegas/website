@@ -21,6 +21,11 @@ html,:host {
     -webkit-tap-highlight-color: transparent
 }
 
+.list-disc
+{
+list-style-type: disc
+}
+
 body {
     margin: 0;
     line-height: inherit

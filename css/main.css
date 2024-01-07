@@ -21,6 +21,11 @@ html,:host {
     -webkit-tap-highlight-color: transparent
 }
 
+.list-disc
+{
+list-style-type: disc
+}
+
 body {
     margin: 0;
     line-height: inherit
@@ -96,6 +101,7 @@ progress {
 
 summary {
     display: list-item
+    list-style-type: disc
 }
 
 blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre {

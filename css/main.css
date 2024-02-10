@@ -388,6 +388,15 @@ img,video {
     line-height: 1.75rem
 }
 
+.text-xl {
+    font-size: 1.525rem;
+    line-height: 2.0rem
+}
+.text-m {
+    font-size: 1rem;
+    line-height: 1.5rem
+}
+
 .text-sm {
     font-size: .875rem;
     line-height: 1.25rem

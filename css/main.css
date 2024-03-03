@@ -368,6 +368,11 @@ img,video {
     padding-right: 1rem
 }
 
+.middle-card {
+    padding-left: 7rem;
+    padding-right: 7rem
+}
+
 .py-2 {
     padding-top: .5rem;
     padding-bottom: .5rem
@@ -465,3 +470,26 @@ img,video {
 .hover\:decoration-white:hover {
     text-decoration-color: #fff
 }
+
+.box-shadow {
+    border-radius: 0px;
+    box-shadow:  -2px -2px 3px #161515,
+             2px 2px 3px #464545;
+}
+
+.card {
+    width: 400px;
+    height: 125px;
+    background: #212121;
+    box-shadow: 2px 7px 13px rgb(25, 25, 25),
+                -12px -7px 13px rgb(60, 60, 60);
+}
+.card-2 {
+    width: 400px;
+    height: 150px;
+    background: #212121;
+    box-shadow: 2px 7px 13px rgb(25, 25, 25),
+                -12px -7px 13px rgb(60, 60, 60);
+}
+   
+   

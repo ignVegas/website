@@ -571,26 +571,28 @@ img,video {
 }
 
 .logo-link-expanded {
-    margin-left: 350px;
+    margin-left: 325px;
 }
 
 .dropdown-overlay {
+
     display: block;
-    align-items: center;
     border-radius: 5px;
-    top: 2.5%;
     width: 1px; /* Start with a small width */
     height: 60px; /* Allow height to adjust based on content */
-    position: fixed;
     background-color: rgb(139, 148, 231);
     z-index: 1001;
     overflow: hidden;
     transition: width 0.5s ease;
+    position: fixed; /* Change position to fixed */
+    top: 3.5%; /* Position the overlay at the vertical center */
+    transform: translateY(-8%); /* Adjust the vertical position */
 }
 
 .dropdown-overlay.active {
+    position: fixed;
     align-items: center;
-    width: 350px; /* Expand to a larger width when active */
+    width: 325px; /* Expand to a larger width when active */
 }
 
 .dropdown-content {
@@ -600,6 +602,7 @@ img,video {
 }
 
 .menu-style {
+
     text-decoration: none;
     color: white; /* Adjust text color */
 }

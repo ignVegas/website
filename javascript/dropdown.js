@@ -15,4 +15,11 @@ document.addEventListener('DOMContentLoaded', function () {
             menuStyle.classList.remove('active');
         }
     });
+
+
+    // JavaScript function to redirect when clicking on a card
+    function redirectToUrl(url) {
+        window.location.href = url;
+    }
+
 });

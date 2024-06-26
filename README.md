@@ -1,6 +1,6 @@
 # Portfolio Website
 
-Welcome to my portfolio website! This website showcases my projects, skills, and experiences in the field of [Your Field/Area of Expertise].
+Welcome to my portfolio website! This website showcases my projects, skills, and experiences in the field of [Software Engineering].
 
 ## About Me
 
@@ -22,6 +22,11 @@ I am Vegas, a passionate Software Engineer with 4 years of experience in Softwar
 - Description: The Sorting Visualization Program is a C++ application that visually demonstrates sorting algorithms using SFML. Users can select from algorithms like Bubble Sort, Quick Sort, and more to see how they sort arrays in real-time.
 - Technologies Used: C++, SFML
 - Demo: [[Link to project]](https://github.com/ignVegas/VisualSorting)
+
+### Project 4: LiftLog
+- Description: A HTML, CSS, and JavaScript Application that allows a user to input their lifting progress with basic exercises and export them for safe keeping/logging.
+- Techologies Used: CSS, JavaScript, HTML, Git, Github
+- Demo: [[Link to project]](https://www.vegasmantsch.com/liftlog/log/)
   
 ## Skills
 

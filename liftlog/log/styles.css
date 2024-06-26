@@ -1,0 +1,316 @@
+/* General CSS Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #562F1B;
+    background-color: #F5F5DC;
+    justify-content: flex-start; /* Ensure content starts from the top */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh; /* Ensure body takes at least the full viewport height */
+    padding-top: 100px; /* Ensure content is not hidden behind the fixed header */
+    padding-bottom: 125px; /* Ensure content is not hidden behind the fixed footer */
+    background-image: url('assets/background.png');
+    background-size: auto;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background-color: #FFFACD;
+    color: white;
+    z-index: 1001; /* Ensure the header is on top of other elements */
+    padding: 1em 0;
+}
+
+header .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header .logo {
+    width: 100%; /* Set width to 100% to scale with the screen size */
+    max-width: 200px; /* Optional: Set a maximum width for larger screens */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+h1 {
+    font-size: 2em;
+    margin: 0;
+}
+
+#features {
+    padding: 20px; /* Adjust padding to ensure content is not hidden behind fixed header and footer */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-shadow: #333;
+    width: 100%;
+    z-index: 1; /* Ensure the features are above the background */
+}
+
+
+.feature {
+    margin-bottom: 1.5em;
+}
+
+.cards {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Adjust gap for spacing between cards */
+    align-items: center;
+    z-index: 1; /* Ensure the cards are above the background */
+}
+
+.card-container {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Adjust gap for spacing between card logos */
+    height: auto;
+}
+
+.card-logo {
+    width: 125px; /* Adjust size as needed */
+    height: 125px; /* Adjust size as needed */
+}
+
+.cards .card {
+    display: flex;
+    align-items: center;
+    padding: 20px 20px;  /* Adjust padding as needed */
+    width: 80%;  /* Adjust width as needed */
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    border-radius: 10px;  /* Adjust border radius as needed */
+    color: #562F1B;
+    cursor: pointer;
+    transition: background-color 0.4s;
+    border: 3px solid #562F1B; /* Adjust border as needed */
+}
+
+.cards .red {
+    color: #562F1B;
+    background-color: #FFFACD;
+    text-shadow: #333;
+}
+
+.cards .blue {
+    color: #562F1B;
+    background-color: #FFFACD;
+    text-shadow: #333;
+}
+
+.cards .green {
+    color: #562F1B;
+    background-color: #FFFACD;
+    text-shadow: #333;
+}
+
+.cards .card:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+    transition: transform 0.4s ease;
+}
+
+.cards .card h3 {
+    font-size: 1.2em;  /* Adjust font size as needed */
+    text-decoration: underline;
+    position: relative;
+    margin: 0;
+}
+
+#signup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    background-color: #FFFACD; /* Signup background color */
+    z-index: 1002; /* Ensure the signup is on top of other elements */
+    padding: 1em 0;
+}
+
+button {
+    display: inline-block;
+    border-radius: 4px;  /* Adjust border radius as needed */
+    background-color: #562F1B;
+    border: none;
+    color: #FFFACD; /* Explicitly set the text color */
+    text-align: center;
+    font-size: 16px;  /* Adjust font size as needed */
+    padding: 16px;  /* Adjust padding as needed */
+    width: 130px;  /* Adjust width as needed */
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 5px;  /* Adjust margin as needed */
+    text-shadow: #333;
+}
+
+button span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+    color: #FFFACD; /* Explicitly set the text color */
+}
+
+button span:after {
+    content: '»';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -10px; /* Adjust position as needed */
+    transition: 0.5s;
+    color: #FFFACD; /* Explicitly set the text color */
+}
+
+button:hover span {
+    padding-right: 10px; /* Adjust padding as needed */
+}
+
+button:hover span:after {
+    opacity: 1;
+    right: 0;
+    color: #FFFACD; /* Explicitly set the text color */
+}
+
+a.btn2 {
+    text-decoration: none; /* Remove underline from links */
+    color: #FFFACD; /* Set link text color */
+}
+
+@media (max-width: 768px) {
+    .card-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    header {
+        padding: 2em 0;
+    }
+
+    #signup {
+        padding: 2em 0;
+    }
+}
+
+/* Basic styling for dropdown and button */
+.dropdown {
+    margin: 20px;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #FFFACD;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 3px solid #562F1B;
+    width: 70%; /* Could be more or less, depending on screen size */
+    text-align: center; /* Center align the content */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Blur effect */
+.blur {
+    filter: blur(5px);
+}
+
+.exercise-buttons button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+
+.set {
+    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.labels {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.coolinput {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    position: static;
+    max-width: 70%;
+    margin-right: 10px; /* Adjust margin as needed */
+}
+
+.coolinput label.text {
+    font-size: 0.75rem;
+    color: #562F1B;
+    font-weight: 700;
+    position: relative;
+    top: 0.5rem;
+    margin: 0 0 0 7px;
+    padding: 0 3px;
+    background: #F5F5DC;
+    width: fit-content;
+}
+
+.coolinput input[type=number].input {
+    padding: 11px 10px;
+    font-size: 0.75rem;
+    border: 2px #562F1B solid;
+    border-radius: 5px;
+    background: #F5F5DC;
+}
+
+.coolinput input[type=number].input:focus {
+    outline: none;
+}

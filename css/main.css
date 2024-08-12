@@ -5,10 +5,6 @@
     border-color: #e5e7eb
 }
 
-:before,:after {
-    --tw-content: ""
-}
-
 html,:host {
     line-height: 1.5;
     -webkit-text-size-adjust: 100%;
@@ -17,13 +13,18 @@ html,:host {
     tab-size: 4;
     font-feature-settings: normal;
     font-variation-settings: normal;
-    -webkit-tap-highlight-color: transparent
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth; /* Enable smooth scrolling for the entire page */
 }
 
 body {
     font-family:"Titillium Web", sans-serif;
     margin: 0;
     line-height: inherit
+}
+
+.matrix-text {
+    letter-spacing: 0.1em;
 }
 
 hr {
@@ -47,13 +48,6 @@ a {
     text-decoration: inherit
 }
 
-
-
-
-
-
-
-
 button,select {
     text-transform: none
 }
@@ -64,35 +58,6 @@ button,[type=button],[type=reset],[type=submit] {
     background-image: none
 }
 
-:-moz-focusring {
-    outline: auto
-}
-
-:-moz-ui-invalid {
-    box-shadow: none
-}
-
-progress {
-    vertical-align: baseline
-}
-
-::-webkit-inner-spin-button,::-webkit-outer-spin-button {
-    height: auto
-}
-
-[type=search] {
-    -webkit-appearance: textfield;
-    outline-offset: -2px
-}
-
-::-webkit-search-decoration {
-    -webkit-appearance: none
-}
-
-::-webkit-file-upload-button {
-    -webkit-appearance: button;
-    font: inherit
-}
 
 summary {
     display: list-item
@@ -157,106 +122,6 @@ img,video {
     display: none
 }
 
-*,:before,:after {
-    --tw-border-spacing-x: 0;
-    --tw-border-spacing-y: 0;
-    --tw-translate-x: 0;
-    --tw-translate-y: 0;
-    --tw-rotate: 0;
-    --tw-skew-x: 0;
-    --tw-skew-y: 0;
-    --tw-scale-x: 1;
-    --tw-scale-y: 1;
-    --tw-pan-x: ;
-    --tw-pan-y: ;
-    --tw-pinch-zoom: ;
-    --tw-scroll-snap-strictness: proximity;
-    --tw-gradient-from-position: ;
-    --tw-gradient-via-position: ;
-    --tw-gradient-to-position: ;
-    --tw-ordinal: ;
-    --tw-slashed-zero: ;
-    --tw-numeric-figure: ;
-    --tw-numeric-spacing: ;
-    --tw-numeric-fraction: ;
-    --tw-ring-inset: ;
-    --tw-ring-offset-width: 0px;
-    --tw-ring-offset-color: #fff;
-    --tw-ring-color: rgb(59 130 246 / .5);
-    --tw-ring-offset-shadow: 0 0 #0000;
-    --tw-ring-shadow: 0 0 #0000;
-    --tw-shadow: 0 0 #0000;
-    --tw-shadow-colored: 0 0 #0000;
-    --tw-blur: ;
-    --tw-brightness: ;
-    --tw-contrast: ;
-    --tw-grayscale: ;
-    --tw-hue-rotate: ;
-    --tw-invert: ;
-    --tw-saturate: ;
-    --tw-sepia: ;
-    --tw-drop-shadow: ;
-    --tw-backdrop-blur: ;
-    --tw-backdrop-brightness: ;
-    --tw-backdrop-contrast: ;
-    --tw-backdrop-grayscale: ;
-    --tw-backdrop-hue-rotate: ;
-    --tw-backdrop-invert: ;
-    --tw-backdrop-opacity: ;
-    --tw-backdrop-saturate: ;
-    --tw-backdrop-sepia:
-}
-
-::backdrop {
-    --tw-border-spacing-x: 0;
-    --tw-border-spacing-y: 0;
-    --tw-translate-x: 0;
-    --tw-translate-y: 0;
-    --tw-rotate: 0;
-    --tw-skew-x: 0;
-    --tw-skew-y: 0;
-    --tw-scale-x: 1;
-    --tw-scale-y: 1;
-    --tw-pan-x: ;
-    --tw-pan-y: ;
-    --tw-pinch-zoom: ;
-    --tw-scroll-snap-strictness: proximity;
-    --tw-gradient-from-position: ;
-    --tw-gradient-via-position: ;
-    --tw-gradient-to-position: ;
-    --tw-ordinal: ;
-    --tw-slashed-zero: ;
-    --tw-numeric-figure: ;
-    --tw-numeric-spacing: ;
-    --tw-numeric-fraction: ;
-    --tw-ring-inset: ;
-    --tw-ring-offset-width: 0px;
-    --tw-ring-offset-color: #fff;
-    --tw-ring-color: rgb(59 130 246 / .5);
-    --tw-ring-offset-shadow: 0 0 #0000;
-    --tw-ring-shadow: 0 0 #0000;
-    --tw-shadow: 0 0 #0000;
-    --tw-shadow-colored: 0 0 #0000;
-    --tw-blur: ;
-    --tw-brightness: ;
-    --tw-contrast: ;
-    --tw-grayscale: ;
-    --tw-hue-rotate: ;
-    --tw-invert: ;
-    --tw-saturate: ;
-    --tw-sepia: ;
-    --tw-drop-shadow: ;
-    --tw-backdrop-blur: ;
-    --tw-backdrop-brightness: ;
-    --tw-backdrop-contrast: ;
-    --tw-backdrop-grayscale: ;
-    --tw-backdrop-hue-rotate: ;
-    --tw-backdrop-invert: ;
-    --tw-backdrop-opacity: ;
-    --tw-backdrop-saturate: ;
-    --tw-backdrop-sepia:
-}
-
 .static {
     position: static
 }
@@ -264,10 +129,9 @@ img,video {
 .absolute {
     position: absolute
 }
-
 .mAlign {
-    margin-left: auto;
-    margin-right: auto
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .my-4 {
@@ -317,20 +181,9 @@ img,video {
 }
 
 .width {
-    max-width: 48rem
+    max-width: 24rem
 }
 
-.transform {
-    transform: translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
-}
-
-.cursor-pointer {
-    cursor: pointer
-}
-
-.list-disc {
-    list-style-type: disc
-}
 
 .items-center {
     align-items: center
@@ -343,6 +196,7 @@ img,video {
 .border {
     border-width: 1px
 }
+
 
 .border-neutral-800 {
     --tw-border-opacity: 1;
@@ -358,6 +212,10 @@ img,video {
     padding: 1rem
 }
 
+.px-1 {
+    padding-left: .25rem;
+    padding-right: .25rem
+}
 .px-3 {
     padding-left: .75rem;
     padding-right: .75rem
@@ -463,117 +321,6 @@ img,video {
     text-underline-offset: 3px
 }
 
-.filter {
-    filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)
-}
-
-.transition {
-    transition-property: color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;
-    transition-property: color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;
-    transition-property: color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;
-    transition-timing-function: cubic-bezier(.4,0,.2,1);
-    transition-duration: .8s
-}
-
-
-:root {
-    color-scheme: dark
-}
-
-.hover\:bg:hover {
-    background-color: #26262680
-}
-
-.hover\:decoration-white:hover {
-    text-decoration-color: #fff
-}
-
-.box-shadow {
-    border-radius: 0px;
-    box-shadow:  -2px -2px 3px #161515,
-             2px 2px 3px #464545;
-}
-
-.card {
-    width: 400px;
-    height: 125px;
-    background: #212121;
-    box-shadow: 2px 7px 13px rgb(25, 25, 25),
-                -12px -7px 13px rgb(60, 60, 60);
-}
-.card-2 {
-    width: 400px;
-    height: 150px;
-    background: #212121;
-    box-shadow: 2px 7px 13px rgb(25, 25, 25),
-                -12px -7px 13px rgb(60, 60, 60);
-}
-
-.card-3 {
-    width: 400px;
-    height: 175px;
-    background: #212121;
-    box-shadow: 2px 7px 13px rgb(25, 25, 25),
-                -12px -7px 13px rgb(60, 60, 60);
-}
-
-
-.card-4 {
-    width: 400px;
-    height: 200px;
-    background: #212121;
-    box-shadow: 2px 7px 13px rgb(25, 25, 25),
-                -12px -7px 13px rgb(60, 60, 60);
-}
-   
-.hamburger {
-    cursor: pointer;
-  }
-  
-  .hamburger input {
-    display: none;
-  }
-  
-  .hamburger svg {
-    /* The size of the SVG defines the overall size */
-    height: 3em;
-    /* Define the transition for transforming the SVG */
-    transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  .line {
-    fill: none;
-    stroke: rgb(139, 148, 231);
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-width: 3;
-    /* Define the transition for transforming the Stroke */
-    transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
-                stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  .line-top-bottom {
-    stroke-dasharray: 12 63;
-  }
-  
-  .hamburger input:checked + svg {
-    transform: rotate(-45deg);
-  }
-  
-  .hamburger input:checked + svg .line-top-bottom {
-
-    stroke-dasharray: 20 300;
-    stroke-dashoffset: -32.42;
-  }
-
-#logoLink {
-    transition: margin-left 0.5s ease; /* You can adjust the duration and timing function as needed */
-}
-
-.logo-link-expanded {
-    margin-left: 325px;
-}
-
 .button-container {
     display: flex;
     background-color: rgb(73, 62, 224);
@@ -608,90 +355,103 @@ img,video {
   .icon {
     font-size: 20px;
   }
-
-  .card-container {
-    display: flex; /* Use flexbox to align items */
-    }   
-
-    
-    .card {
-        width: calc(50% - 10px); /* Set width to 50% minus margin/padding */
-        margin-right: 20px; /* Add space between cards */
-        box-sizing: border-box; /* Include padding and border in width calculation */
-    }
-
-    .card:last-child {
-        margin-right: 0; /* Remove margin from last card to prevent overflow */
-    }
-
-  section.card {
-    position: relative;
-    width: 350px;
-    height: 200px;
-    background-color: rgb(73, 62, 224);
-    border-radius: 10px;
+  
+  .container {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    perspective: 1000px;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px,
-    rgba(73, 113, 245, 0.5) 5px 10px 15px;
-    transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-  .card svg {
-    fill: rgba(73, 113, 245, 0.5) 5px 10px 15px;
-    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border-radius: 3px;
-  }
-  .card:hover {
-    transform: scale(1.05);
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px,
-    rgba(73, 113, 245, 0.5) 5px 10px 15px;
-    background-color:  rgb(73, 62, 224);
-    color: #ffffff;
-  }
-  
-  .card__content {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
+}
+
+.left-container {
+    flex: 0 0 40%; /* Fixed width for the left container */
+    background-color: rgb(23 23 23 / var(--tw-bg-opacity)); /* Same as the base background color */
     padding: 20px;
-    box-sizing: border-box;
-    background-color:  rgb(73, 62, 224);
-    transform: rotateX(-90deg);
-    transform-origin: bottom;
-    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-  
-  .card:hover .card__content {
-    transform: rotateX(0deg);
-  }
-  
-  .card__title {
-    margin: 0;
-    padding-left: 5px;
-    font-size: 24px;
-    color: var(--white);
-    font-weight: 700;
-  }
-  
-  .card:hover svg {
-    scale: 0;
-  }
-  
-  .card__description {
-    margin: 10px 0 0;
-    font-size: 14px;
-    color: #ffffff;
-    line-height: 1.4;
-  }
-  /* Commands to change the shadows in dark mode
-  @media (prefers-color-scheme: dark) {
-    .card:hover {
-    box-shadow: 0 8px 16px #000000;
+    overflow-y: auto; /* Enable vertical scrolling */
+    height: 100vh; /* Full viewport height */
+}
+
+.right-container {
+    flex: 1; /* Takes up remaining space */
+    background-color: rgb(23 23 23 / var(--tw-bg-opacity)); /* Same as the base background color */
+    padding: 20px;
+    overflow-y: auto; /* Enable vertical scrolling */
+    height: 100vh; /* Full viewport height */
+}
+
+.card-container {
+    display: flex;
+    flex-direction: column; /* Stack cards vertically */
+    gap: 16px; /* Space between cards */
+}
+
+.card {
+    background-color: rgb(23 23 23 / var(--tw-bg-opacity)); /* Same as the base background color */
+    color: white;
+    width: 100%; /* Full width of the container */
+    height: auto; /* Adjust height based on content */
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
+    margin-bottom: 20px; /* Vertical spacing between cards */
+}
+
+.card:hover {
+    background-color: rgb(27 27 27 / var(--tw-bg-opacity)); /* Hover color */
+}
+
+.card:hover .card-title {
+    color: rgb(0, 110, 255); /* Color when card is hovered */
+    text-shadow: rgb(133, 124, 252) 0 0 1px; /* Text shadow when card is hovered */
+}
+
+.card:last-child {
+    margin-bottom: 0; /* Remove margin from the last card */
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between; /* Space out title and date */
+    margin-bottom: 12px; /* Space between header and details */
+}
+
+.card-title {
+    font-weight: bold;
+}
+
+.card-date {
+    font-style: italic;
+    opacity: 20%;
+}
+
+.card-details {
+    margin-bottom: 16px; /* Space between details and button */
+}
+
+.card-button {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: rgb(27 27 27 / var(--tw-bg-opacity)); /* Button color */
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.card-button:hover {
+    background-color: rgb(37 37 37 / var(--tw-bg-opacity)); /* Button hover color */
+}
+
+/* Styles for mobile devices */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
     }
-  }*/
-  
+
+    .left-container, .right-container {
+        width: 100%;
+        padding: 10px; /* Adjust padding as needed */
+        margin: 0; /* Remove any margins to avoid extra space */
+    }
+}

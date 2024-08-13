@@ -83,3 +83,9 @@ function scrambleTowardsTarget(currentChar, targetChar) {
 
 // Initial call to start the text cycle
 scrambleAndChangeText();
+
+document.addEventListener('mousemove', function(e) {
+    const lightEffect = document.querySelector('.light-effect');
+    lightEffect.style.left = `${e.clientX}px`;
+    lightEffect.style.top = `${e.clientY}px`;
+});

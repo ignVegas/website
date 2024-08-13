@@ -455,3 +455,14 @@ img,video {
         margin: 0; /* Remove any margins to avoid extra space */
     }
 }
+
+.light-effect {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(12, 12, 12, 0.8) 0%, rgba(0, 0, 0, 0) 80%);
+    border-radius: 50%;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    transform: translate(-50%, -50%);
+}

@@ -466,3 +466,68 @@ img,video {
     mix-blend-mode: screen;
     transform: translate(-50%, -50%);
 }
+
+/* Modal Styles */
+.modal-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 50;
+    opacity: 0; /* Hidden initially */
+    pointer-events: none; /* Prevent interactions when hidden */
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.open {
+    opacity: 1; /* Visible when open */
+    pointer-events: auto; /* Enable interactions when visible */
+}
+
+.modal-content {
+    background-color: #2d2d2d;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    max-width: 90%;
+    text-align: center;
+    transform: scale(0); /* Start scaled down */
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.open .modal-content {
+    transform: scale(1); /* Scale up when modal is open */
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    color: white;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-professional {
+    background-color: #1d4ed8; /* Blue color for Professional */
+}
+
+.btn-gamemode {
+    background-color: #16a34a; /* Green color for Game Mode */
+}
+
+.btn:hover {
+    transform: scale(1.05); /* Slightly enlarge button on hover */
+}

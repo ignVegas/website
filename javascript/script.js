@@ -4,6 +4,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const logoLink = document.getElementById('logoLink');
     const menuStyle = document.querySelector('.menu-style');
 
+    const versionModal = document.getElementById('versionModal');
+    versionModal.classList.remove('hidden');
+    versionModal.classList.add('open');
+
+    document.getElementById('professionalBtn').addEventListener('click', function () {
+        // Close the modal
+        versionModal.classList.remove('open');
+        versionModal.classList.add('hidden');
+    });
+    document.getElementById('gameModeBtn').addEventListener('click', function () {
+        window.location.href = 'game.html'; // Redirect to game mode version
+    });
+
     checkbox.addEventListener('change', function () {
         if (checkbox.checked) {
             logoLink.classList.add('logo-link-expanded');

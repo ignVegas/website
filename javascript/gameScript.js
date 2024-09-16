@@ -33,17 +33,18 @@ camera.position.set(0, 0, 30); // Position the camera far enough to view the pla
 camera.lookAt(0, 0, 0);       // Look at the center of the scene
 
 // Create lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); // Ambient light for overall brightness
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Ambient light for overall brightness
 scene.add(ambientLight);
 
-const pointLight = new THREE.PointLight(0xffffff, 1, 100);
-pointLight.position.set(50, 50, 50);
-scene.add(pointLight);
 
 // Load texture for planet surface
 const textureLoader = new THREE.TextureLoader();
 const planetTexture = textureLoader.load('assets/sky.png'); // Replace with your texture path
 const grassTexture = textureLoader.load('assets/01.png'); // Grass patch texture
+
+const backgroundScene = new THREE.Scene();
+const backgroundTexture = textureLoader.load('assets/background.jpg');
+scene.background = backgroundTexture;
 
 // Create a spherical planet with textured surface
 const planetRadius = 20;
@@ -138,22 +139,66 @@ compassGroup.add(rightLabel);
 planet.add(compassGroup);
 
 // Movement speed for rotating the planet
-const rotationSpeed = 0.01;
+const rotationSpeed = 0.005;
+
+// Define the bounding box corners
+const boundingBox = {
+    minX: -1.14,
+    maxX: -0.96,
+    minY: -1.25,
+    maxY: -0.88,
+    minZ: 0.00,
+    maxZ: 0.00
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Function to show the information box with a given message
+    function showInfoBox(message) {
+        const infoBox = document.getElementById('infoBox');
+        const infoText = document.getElementById('infoText');
+        infoText.textContent = message; // Set the text content of the info box
+        infoBox.style.display = 'block'; // Show the info box
+    }
+
+    // Function to hide the information box
+    function hideInfoBox() {
+        const infoBox = document.getElementById('infoBox');
+        infoBox.style.display = 'none'; // Hide the info box
+    }
+
+    // Add event listener to the close button
+    document.getElementById('closeButton').addEventListener('click', () => {
+        hideInfoBox();
+    });
+});
+
+// Function to check if the cube is within the bounding box
+function isCubeWithinBoundingBox() {
+    const pos = planet.rotation;
+    return pos.x >= boundingBox.minX && pos.x <= boundingBox.maxX &&
+           pos.y >= boundingBox.minY && pos.y <= boundingBox.maxY &&
+           pos.z >= boundingBox.minZ && pos.z <= boundingBox.maxZ;
+}
 
 function handleInput() {
-    if (keys['ArrowLeft']) {
+    if (keys['ArrowLeft'] || keys['KeyD']) {
         planet.rotation.y -= rotationSpeed; // Rotate planet left
     }
-    if (keys['ArrowRight']) {
+    if (keys['ArrowRight'] || keys['KeyA']) {
         planet.rotation.y += rotationSpeed; // Rotate planet right
     }
-    if (keys['ArrowUp']) {
+    if (keys['ArrowUp'] || keys['KeyS']) {
         planet.rotation.x -= rotationSpeed; // Rotate planet up
     }
-    if (keys['ArrowDown']) {
+    if (keys['ArrowDown'] || keys['KeyW']) {
         planet.rotation.x += rotationSpeed; // Rotate planet down
     }
+
+    if (keys['Space'] && isCubeWithinBoundingBox()) {
+        showInfoBox('This is your information message.');
+    }
 }
+
 
 function constrainPlayerToSurface() {
     const direction = new THREE.Vector3().subVectors(cube.position, planet.position).normalize();
@@ -166,6 +211,8 @@ function animate() {
     handleInput(); // Handle player input to rotate the planet
 
     constrainPlayerToSurface(); // Ensure the player stays on the surface of the planet
+
+    console.log(`Position: (${planet.rotation.x.toFixed(2)}, ${planet.rotation.y.toFixed(2)}, ${planet.rotation.z.toFixed(2)})`);
 
     // Ensure the player remains in the center of the camera view
     camera.position.copy(cube.position).add(new THREE.Vector3(0, 10, 30));

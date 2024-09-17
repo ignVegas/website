@@ -1,29 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Three.js Game Version</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VegasMantsch.com</title>
+    <link rel="icon" href="https://vegasmantsch.com/assets/logo.png">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.0.0/dist/tailwind.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; }
-        canvas { display: block; }
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background-color: lightblue;
+            border: 2px solid black;
+        }
     </style>
 </head>
-<body>
-    <!-- Information Box -->
-    <div id="infoBox" class="info-box">
-        <p id="infoText">Your information goes here.</p>
-    </div>
-    
-    <script type="importmap">
-        {
-            "imports": {
-              "three": "https://unpkg.com/three@0.155.0/build/three.module.js",
-              "three/addons/": "https://unpkg.com/three@0.155.0/examples/jsm/",
-              "dat.gui": "https://unpkg.com/dat.gui@0.7.9/build/dat.gui.module.js"
-            }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VegasMantsch.com</title>
+    <link rel="icon" href="https://vegasmantsch.com/assets/logo.png">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.0.0/dist/tailwind.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet">
+    <style>
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background-color: lightblue;
+            border: 2px solid black;
         }
-        </script>
-        <script type="module" src="javascript/gameScript.js"></script>
+    </style>
+</head>
+<body class="text-white bg-neutral-900">
+
+    <!-- Main container with a flex layout -->
+    <div class="container mx-auto p-4 flex space-x-4">
+        
+        <div class="container">
+            <div class="left-container">
+                <main>
+                    <h1 class="text-4xl font-bold">Vegas Mantsch</h1>
+                    <div>   
+                        <p class="matrix-text text-neutral-300 py-2" id="matrixText">Software Engineer Major @ UWGB</p>
+                    </div>
+        
+                    <nav class="my-8">
+                        <ul class="flex">
+                            <li>
+                                <div class="button-container">
+                                    <a href="resume/VegasMantsch.pdf" class="button" download="VegasMantsch.pdf">
+                                        <img width="40em" height="40em" src="assets/home.png" alt="home">
+                                    </a>
+                                    <a href="https://www.github.com/ignvegas" class="button" target="_blank">
+                                        <img width="40em" height="40em" src="assets/github.png" alt="GitHub">
+                                    </a>
+                                    <a href="https://www.linkedin.com/in/vegasm/" class="button" target="_blank">
+                                        <img width="40em" height="40em" src="assets/linkedin.png" alt="LinkedIn">
+                                    </a>
+                                    <a href="mailto:mantv26@uwgb.edu" class="button">
+                                        <img width="40em" height="40em" src="assets/projects.png" alt="projects">
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="flex px-1">
+                            
+                            </li>
+                        </ul>
+                    </nav>
+        
+                    <p class="text-neutral-300 mt-6 underline font-bold">About Me:</p>
+                    <p>In addition to my passion for technology;Outside of my professional interests, I am actively engaged in medical research focused on muscle growth and fitness, I'm a dedicated animal lover with four cats ranging from 1 to 9 years old. I also have a deep appreciation for anime, video games, and personal self-improvement.</p>
+                    <p class="text-neutral-300 mt-6 text-sm">
+                        This webpage is being hosted using GitHub Pages and its student developer pack.
+                    </p>
+                </main>
+            </div>
+        <!-- Right section for the canvas (game area) -->
+        <div class="flex-1">
+            <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+            <!-- Right card below the canvas -->
+            <div id="projectCard" class="mt-4 bg-white shadow-lg rounded-lg p-6">
+                <h2 class="text-xl font-bold mb-4 underline">Project You are viewing!</h2>
+                <p id="projectDescription" class="text-gray-700 text-xl font-bold mb-4">Check out the latest projects I’ve been working on, including web development, gaming, and software solutions.</p>
+                <ul id="projectList" class="list-disc list-inside mt-2">
+                    <li>3D Platformer Game in Three.js</li>
+                    <li>IT Solutions for Small Businesses</li>
+                    <li>Custom Websites and Applications</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="javascript/gameScript.js"></script>
 </body>
+
+
 </html>
+
+

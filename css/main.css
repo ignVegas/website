@@ -401,6 +401,51 @@ img,video {
     background-color: rgb(27 27 27 / var(--tw-bg-opacity)); /* Hover color */
 }
 
+/* Tabs styles */
+.tabs {
+    position: relative;
+    width: 100%;
+    margin-bottom: 12px;
+}
+.tab-buttons {
+    display: inline-flex;
+    background: rgba(255,255,255,0.03);
+    border-radius: 999px;
+    padding: 6px;
+}
+.tab-btn {
+    background: transparent;
+    color: #cbd5e1;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.12s ease;
+}
+.tab-btn.active {
+    color: white;
+}
+.tab-btn:focus { outline: none; }
+
+.tab-indicator {
+    position: absolute;
+    bottom: -6px;
+    left: 0px;
+    height: 3px;
+    /* short fixed line centered under the label */
+    width: 40px;
+    background: linear-gradient(90deg, #5b21b6, #3b82f6);
+    border-radius: 4px;
+    transition: transform 0.35s cubic-bezier(.2,.9,.2,1), width 0.25s ease;
+    pointer-events: none;
+}
+
+.tab-content { display: none; opacity: 0; transform: translateX(10px); transition: opacity 0.3s ease, transform 0.3s ease; }
+.tab-content.active { display: block; opacity: 1; transform: translateX(0); }
+
+.tab-content-hidden { display: none; }
+
 .card:hover .card-title {
     color: rgb(0, 110, 255); /* Color when card is hovered */
     text-shadow: rgb(133, 124, 252) 0 0 1px; /* Text shadow when card is hovered */

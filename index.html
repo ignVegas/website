@@ -46,7 +46,7 @@
                                 <a href="https://www.linkedin.com/in/vegasm/" class="button" target="_blank">
                                     <img width="40em" height="40em" src="assets/linkedin.png" alt="LinkedIn">
                                 </a>
-                                <a href="mailto:mantv26@uwgb.edu" class="button">
+                                <a href="mailto:vegasmantsch@gmail.com" class="button">
                                     <img width="40em" height="40em" src="assets/projects.png" alt="projects">
                                 </a>
                             </div>
@@ -58,15 +58,27 @@
                 </nav>
 
                 <p class="text-neutral-300 mt-6 underline font-bold">About Me:</p>
-                <p>Beyond my passion for technology, I enjoy exploring medical research on muscle growth and fitness. I’m an animal lover with four cats (ages 1 to 9), and I have a deep appreciation for anime, video games, and personal growth.</p>
+                <p>Outside of coding, I’m passionate about fitness and fascinated by the science behind muscle growth and performance. I’m an animal lover with four cats ranging from playful kittens to chill older companions, and I unwind through anime, gaming, and continuous self-improvement. I’m always looking for ways to grow, whether that’s building better software, improving in the gym, or learning something new every day.</p>
+<p class="text-neutral-300 mt-6 text-sm"></p>
                 <p class="text-neutral-300 mt-6 text-sm">
                     This webpage is being hosted using GitHub Pages and its student developer pack.
                 </p>
             </main>
         </div>
         <div class="right-container">
-            <p class="text-neutral-300 mt-6 underline font-bold">Projects:</p>
-            <div class="card">
+            <!-- Tab header -->
+            <div class="tabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="projects">Projects</button>
+                    <button class="tab-btn" data-tab="experience">Experience</button>
+                </div>
+                <div class="tab-indicator"></div>
+            </div>
+
+            <!-- Projects content -->
+            <div id="projects" class="tab-content active">
+                <p class="text-neutral-300 mt-6 underline font-bold">Projects:</p>
+                <div class="card">
                 <div class="card-header">
                     <span class="card-title">Medieval Munchers</span>
                     <span class="card-date">Sep 2023</span>
@@ -74,6 +86,34 @@
                 <p class="card-details">A 2D Game built fully in java, preset dungeon generation using arrays, and a txt file which is read to generate. Monsters with randomized movement until player is in range. Inventory and key binding, and a final boss fight!</p>
                 <a href="https://www.github.com/ignvegas/medieval-munchers" target="_blank" class="card-button">Source</a>
             </div>
+            </div>
+
+            <!-- Experience content (hidden by default) -->
+            <div id="experience" class="tab-content">
+                <p class="text-neutral-300 mt-6 underline font-bold">Experience:</p>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Information Technology Development Intern</span>
+                        <span class="card-date">May 2025 - Aug 2025</span>
+                    </div>
+                    <p class="card-company"><strong>Company:</strong> West Bend Insurance Company, West Bend, WI</p>
+                    <p class="card-details">I designed and built backend APIs and microservices on Azure using Agile and DevOps practices, improving scalability, reliability, and secure RESTful integrations.
+I automated CI/CD in Azure DevOps and implemented monitoring, health checks, and alerting to speed deployments and ensure uptime and compliance.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Software Engineering Intern</span>
+                        <span class="card-date">Jun 2024 - Sept 2024</span>
+                    </div>
+                    <p class="card-company"><strong>Company:</strong> O'Connor Wealth Management, Mequon, WI</p>
+                    <p class="card-details">I designed and improved client accessibility and brand presence and developed C++ tools to automate accounting and data-entry, cutting manual workload.
+I also implemented secure data handling and testing, and delivered projects end-to-end from design through deployment.</p>
+                </div>
+            </div>
+
+            <!-- resume of remaining project cards moved under projects -->
+            <div id="projects-more" class="tab-content">
             
             <div class="card">
                 <div class="card-header">

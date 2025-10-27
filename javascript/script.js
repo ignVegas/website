@@ -4,36 +4,84 @@ document.addEventListener('DOMContentLoaded', function () {
     const logoLink = document.getElementById('logoLink');
     const menuStyle = document.querySelector('.menu-style');
 
+    // version modal may not exist in this markup; guard before using
     const versionModal = document.getElementById('versionModal');
-    versionModal.classList.remove('hidden');
-    versionModal.classList.add('open');
+    if (versionModal) {
+        versionModal.classList.remove('hidden');
+        versionModal.classList.add('open');
 
-    document.getElementById('professionalBtn').addEventListener('click', function () {
-        // Close the modal
-        versionModal.classList.remove('open');
-        versionModal.classList.add('hidden');
-    });
-    document.getElementById('gameModeBtn').addEventListener('click', function () {
-        window.location.href = 'game.html'; // Redirect to game mode version
-    });
-
-    checkbox.addEventListener('change', function () {
-        if (checkbox.checked) {
-            logoLink.classList.add('logo-link-expanded');
-            dropdownOverlay.classList.add('active');
-            menuStyle.classList.add('active');
-        } else {
-            logoLink.classList.remove('logo-link-expanded');
-            dropdownOverlay.classList.remove('active');
-            menuStyle.classList.remove('active');
+        const professionalBtn = document.getElementById('professionalBtn');
+        if (professionalBtn) {
+            professionalBtn.addEventListener('click', function () {
+                versionModal.classList.remove('open');
+                versionModal.classList.add('hidden');
+            });
         }
-    });
+
+        const gameModeBtn = document.getElementById('gameModeBtn');
+        if (gameModeBtn) {
+            gameModeBtn.addEventListener('click', function () {
+                window.location.href = 'game.html'; // Redirect to game mode version
+            });
+        }
+    }
+
+    if (checkbox) {
+        checkbox.addEventListener('change', function () {
+            if (checkbox.checked) {
+                if (logoLink) logoLink.classList.add('logo-link-expanded');
+                if (dropdownOverlay) dropdownOverlay.classList.add('active');
+                if (menuStyle) menuStyle.classList.add('active');
+            } else {
+                if (logoLink) logoLink.classList.remove('logo-link-expanded');
+                if (dropdownOverlay) dropdownOverlay.classList.remove('active');
+                if (menuStyle) menuStyle.classList.remove('active');
+            }
+        });
+    }
 
 
     // JavaScript function to redirect when clicking on a card
     function redirectToUrl(url) {
         window.location.href = url;
     }
+
+    // Tab switcher logic
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabIndicator = document.querySelector('.tab-indicator');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    function updateActiveTab(tabName, clickedBtn) {
+        tabButtons.forEach(b => b.classList.toggle('active', b === clickedBtn));
+        tabContents.forEach(c => {
+            // allow grouping: any pane whose id equals the tab name OR starts with 'projects' when the projects tab is active
+            const isActive = c.id === tabName || (tabName === 'projects' && c.id.startsWith('projects'));
+            c.classList.toggle('active', isActive);
+        });
+
+        // move indicator under active button
+        if (!clickedBtn || !tabIndicator) return;
+        const rect = clickedBtn.getBoundingClientRect();
+        const parentRect = clickedBtn.parentElement.getBoundingClientRect();
+        // center the fixed-width indicator under the middle of the button
+        const indicatorWidth = parseFloat(getComputedStyle(tabIndicator).width) || 40;
+        const btnCenter = rect.left - parentRect.left + rect.width / 2;
+        const offset = btnCenter - (indicatorWidth / 2);
+        tabIndicator.style.transform = `translateX(${offset}px)`;
+    }
+
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => updateActiveTab(btn.dataset.tab, btn));
+    });
+
+    // initialize indicator position after fonts/load
+    function initIndicator() {
+        const active = document.querySelector('.tab-btn.active');
+        if (active) updateActiveTab(active.dataset.tab, active);
+    }
+    setTimeout(initIndicator, 200);
+    // recompute position on resize
+    window.addEventListener('resize', initIndicator);
 
 });
 

@@ -87,14 +87,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 const texts = [
-    "Software Engineer Major @ UWGB",
-    "Gamer, Coder, Creator",
-    "Problem Solver Extraordinaire",
-    "Tech Enthusiast & Developer",
-    "Music Enthusiast",
-    "Animal Lover",
-    "Anime and Manga Enthusiast",
-    "Biggest Dexter Fan",
+    "Software Engineering Student specializing in Full-Stack Development",
+    "Experienced in Java, C#, .NET, SQL, and Cloud Technologies",
+    "Building responsive web applications with React and JavaScript",
+    "Designing and maintaining scalable backend systems",
+    "Developing secure cloud integrations with Microsoft Azure",
+    "Proficient in database management with MySQL and SQL Server",
+    "Skilled in API design, identity management, and authentication",
+    "Applying Agile principles to deliver efficient, maintainable code",
+    "Version control and collaboration using Git and GitHub",
+    "Focused on delivering reliable, high-performance software solutions"
 ];
 
 let currentTextIndex = 0;

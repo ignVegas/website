@@ -82,21 +82,69 @@ document.addEventListener('DOMContentLoaded', function () {
     setTimeout(initIndicator, 200);
     // recompute position on resize
     window.addEventListener('resize', initIndicator);
+    // recompute position when scrolling so indicator stays aligned
+    // use requestAnimationFrame to avoid layout thrash and keep smooth scrolling
+    const rightContainerEl = document.querySelector('.right-container');
+    const leftContainerEl = document.querySelector('.left-container');
+    let ticking = false;
+    function scheduleIndicatorUpdate() {
+        if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(() => {
+                initIndicator();
+                ticking = false;
+            });
+        }
+    }
+    if (rightContainerEl) {
+        rightContainerEl.addEventListener('scroll', scheduleIndicatorUpdate, { passive: true });
+    }
+    window.addEventListener('scroll', scheduleIndicatorUpdate, { passive: true });
+
+    // Forward wheel/trackpad scrolls on the left container to the right container
+    // so users can scroll projects by placing cursor on the left side.
+    if (leftContainerEl && rightContainerEl) {
+        leftContainerEl.addEventListener('wheel', (e) => {
+            // Forward vertical scroll delta to right column. Use scrollBy when available.
+            try {
+                if (typeof rightContainerEl.scrollBy === 'function') {
+                    rightContainerEl.scrollBy({ top: e.deltaY, left: 0, behavior: 'auto' });
+                } else {
+                    rightContainerEl.scrollTop += e.deltaY;
+                }
+            } catch (err) {
+                // swallow errors and avoid breaking other handlers
+            }
+        }, { passive: true });
+    }
+
+    // If Smooth Scrollbar is being used (it exposes a Scrollbar API), attach listener too
+    try {
+        if (window.Scrollbar && typeof Scrollbar.get === 'function') {
+            const sb = Scrollbar.get(rightContainerEl);
+            if (sb && typeof sb.addListener === 'function') {
+                sb.addListener(() => scheduleIndicatorUpdate());
+            }
+        }
+    } catch (e) {
+        // ignore if Smooth Scrollbar isn't present or accessible
+    }
+
+    // Star-mode removed: no toggle wiring needed
 
 });
 
 
 const texts = [
-    "Software Engineering Student specializing in Full-Stack Development",
-    "Experienced in Java, C#, .NET, SQL, and Cloud Technologies",
-    "Building responsive web applications with React and JavaScript",
-    "Designing and maintaining scalable backend systems",
+    "Software Engineering Student @ UWGB",
+    "Experienced in Java, C#, .NET, SQL, Azure, and C++",
+    "Graduating in May 2026 with a B.S.",
+    "Previously interned at West Bend Insurance",
     "Developing secure cloud integrations with Microsoft Azure",
     "Proficient in database management with MySQL and SQL Server",
     "Skilled in API design, identity management, and authentication",
-    "Applying Agile principles to deliver efficient, maintainable code",
     "Version control and collaboration using Git and GitHub",
-    "Focused on delivering reliable, high-performance software solutions"
+    "Focused on delivering reliable, high-performance software"
 ];
 
 let currentTextIndex = 0;
@@ -147,8 +195,21 @@ function scrambleTowardsTarget(currentChar, targetChar) {
 // Initial call to start the text cycle
 scrambleAndChangeText();
 
+// Original light-follow handler: directly position the large light element under the cursor
 document.addEventListener('mousemove', function(e) {
     const lightEffect = document.querySelector('.light-effect');
-    lightEffect.style.left = `${e.clientX}px`;
-    lightEffect.style.top = `${e.clientY}px`;
+    if (lightEffect) {
+        lightEffect.style.left = `${e.clientX}px`;
+        lightEffect.style.top = `${e.clientY}px`;
+    }
 });
+
+// Touch support: position on touchmove
+document.addEventListener('touchmove', function(e) {
+    const lightEffect = document.querySelector('.light-effect');
+    if (!lightEffect) return;
+    if (!e.touches || e.touches.length === 0) return;
+    const t = e.touches[0];
+    lightEffect.style.left = `${t.clientX}px`;
+    lightEffect.style.top = `${t.clientY}px`;
+}, { passive: true });

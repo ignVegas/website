@@ -27,6 +27,58 @@ body {
     letter-spacing: 0.1em;
 }
 
+/* Flowing gradient background */
+.flowing-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1; /* behind content */
+    pointer-events: none;
+    background: linear-gradient(120deg, #071018 0%, #0b1220 35%, #071017 100%);
+    background-size: 200% 200%;
+    opacity: 0.92;
+    mix-blend-mode: overlay;
+    transition: opacity 300ms linear;
+}
+.flowing-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.02), transparent 25%), radial-gradient(circle at 80% 80%, rgba(255,255,255,0.01), transparent 30%);
+    opacity: 0.04;
+}
+.flowing-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0.012), transparent 20%, rgba(255,255,255,0.008));
+    mix-blend-mode: overlay;
+    opacity: 0.03;
+}
+
+@keyframes flow-bg {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.flowing-bg { animation: flow-bg 16s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+    .flowing-bg { animation: none; }
+}
+
+.title-row { display: flex; align-items: center; gap: 12px; }
+
+/* Star Wars style mode */
+body.star-mode { background: radial-gradient(ellipse at bottom, rgba(10,10,30,0.8), rgba(2,6,23,1)); }
+.star-field {
+    position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background-image: radial-gradient(white 1px, transparent 1px);
+    background-size: 3px 3px; opacity: 0.06;
+}
+
+/* No Star-mode styles — reverted to normal site appearance */
+
+
 hr {
     height: 0;
     color: inherit;
@@ -474,6 +526,12 @@ img,video {
     margin-bottom: 16px; /* Space between details and button */
 }
 
+.card-techstack {
+    margin-top: 6px;
+    font-weight: 400;
+    color: #cbd5e1;
+}
+
 .card-button {
     display: inline-block;
     padding: 8px 16px;
@@ -510,6 +568,8 @@ img,video {
     pointer-events: none;
     mix-blend-mode: screen;
     transform: translate(-50%, -50%);
+    /* Ensure the light effect is above background but doesn't block interactions */
+    z-index: 60;
 }
 
 /* Modal Styles */

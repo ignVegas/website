@@ -355,11 +355,43 @@ document.addEventListener('touchmove', function(e) {
         // prepare next
         next.classList.remove('before','after','active');
         next.style.opacity = '1';
+
+        // We'll guard cleanup so it only runs once even if multiple events fire.
+        let finished = false;
+        function finishCleanup() {
+            if (finished) return;
+            finished = true;
+            // remove any transitional classes left on the outgoing slide
+            try {
+                curr.classList.remove('before','after');
+                curr.style.opacity = '';
+            } catch (e) {}
+            index = newIndex;
+            animating = false;
+        }
+
+        // fallback timeout in case transitionend doesn't fire for any reason
+        const fallback = setTimeout(() => {
+            finishCleanup();
+        }, 900);
+
+        // listen for transitionend on both slides and clean up once either completes
+        const onEnd = (ev) => {
+            if (ev && ev.propertyName && !/transform|opacity/.test(ev.propertyName)) return;
+            clearTimeout(fallback);
+            // remove listeners from both elements
+            curr.removeEventListener('transitionend', onEnd);
+            next.removeEventListener('transitionend', onEnd);
+            finishCleanup();
+        };
+        curr.addEventListener('transitionend', onEnd);
+        next.addEventListener('transitionend', onEnd);
+
         if (dir === 'next') {
             next.classList.add('after');
             // force reflow
             void next.offsetWidth;
-            // animate
+            // animate out the current and bring in the next
             curr.classList.add('before');
             curr.classList.remove('active');
             next.classList.remove('after');
@@ -372,18 +404,6 @@ document.addEventListener('touchmove', function(e) {
             next.classList.remove('before');
             next.classList.add('active');
         }
-
-        const onEnd = (ev) => {
-            // ensure transitionend fires for transform; ignore others
-            if (ev && ev.propertyName && !/transform|opacity/.test(ev.propertyName)) return;
-            curr.removeEventListener('transitionend', onEnd);
-            // cleanup classes
-            curr.classList.remove('before','after');
-            curr.style.opacity = '';
-            index = newIndex;
-            animating = false;
-        };
-        curr.addEventListener('transitionend', onEnd);
     }
 
     prevBtn.addEventListener('click', () => {

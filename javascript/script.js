@@ -301,6 +301,102 @@ document.addEventListener('touchmove', function(e) {
     });
 })();
 
+/* Flipbook slideshow initialization */
+(function() {
+    const stage = document.getElementById('flipbookStage');
+    const prevBtn = document.getElementById('flipPrev');
+    const nextBtn = document.getElementById('flipNext');
+    if (!stage || !prevBtn || !nextBtn) return;
+
+    // load images from assets/self directory
+    const images = [
+        'assets/self/IMG_2210.jpeg',
+        'assets/self/IMG_4104.jpeg',
+        'assets/self/IMG_4115.jpeg',
+        'assets/self/IMG_4118.jpeg',
+        'assets/self/IMG_5010.jpeg',
+        'assets/self/IMG_5577.jpeg'
+    ];
+
+    // shuffle array
+    function shuffle(a) {
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    const ordered = shuffle(images.slice());
+    const slides = [];
+    let index = 0;
+    let animating = false;
+
+    ordered.forEach((src, i) => {
+        const div = document.createElement('div');
+        div.className = 'flipbook-slide';
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = `photo ${i+1}`;
+        div.appendChild(img);
+        stage.appendChild(div);
+        slides.push(div);
+    });
+
+    // make first visible
+    if (slides.length) slides[0].classList.add('active');
+
+    function show(newIndex, dir) {
+        if (animating || newIndex === index) return;
+        animating = true;
+        const curr = slides[index];
+        const next = slides[newIndex];
+
+        // prepare next
+        next.classList.remove('before','after','active');
+        next.style.opacity = '1';
+        if (dir === 'next') {
+            next.classList.add('after');
+            // force reflow
+            void next.offsetWidth;
+            // animate
+            curr.classList.add('before');
+            curr.classList.remove('active');
+            next.classList.remove('after');
+            next.classList.add('active');
+        } else {
+            next.classList.add('before');
+            void next.offsetWidth;
+            curr.classList.add('after');
+            curr.classList.remove('active');
+            next.classList.remove('before');
+            next.classList.add('active');
+        }
+
+        const onEnd = (ev) => {
+            // ensure transitionend fires for transform; ignore others
+            if (ev && ev.propertyName && !/transform|opacity/.test(ev.propertyName)) return;
+            curr.removeEventListener('transitionend', onEnd);
+            // cleanup classes
+            curr.classList.remove('before','after');
+            curr.style.opacity = '';
+            index = newIndex;
+            animating = false;
+        };
+        curr.addEventListener('transitionend', onEnd);
+    }
+
+    prevBtn.addEventListener('click', () => {
+        const nextIndex = (index - 1 + slides.length) % slides.length;
+        show(nextIndex, 'prev');
+    });
+    nextBtn.addEventListener('click', () => {
+        const nextIndex = (index + 1) % slides.length;
+        show(nextIndex, 'next');
+    });
+
+})();
+
 /* Particle drop spawner: spawns small moon/sun PNGs at the cursor in dark-mode
    - uses a simple pool to avoid excessive DOM churn
    - rate-limited and capped for performance

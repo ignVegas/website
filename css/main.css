@@ -553,6 +553,73 @@ img,video {
     width: 100%;
 }
 
+/* Flipbook slideshow styles */
+.flipbook {
+    margin-top: 12px;
+    /* expand to take available left-column width but limit to a comfortable max so images aren't cropped */
+    width: 100%;
+    max-width: 420px;
+}
+.flipbook-stage {
+    width: 100%;
+    /* occupy most of the left column vertically */
+    height: calc(60vh);
+    perspective: 1000px;
+    position: relative;
+}
+.flipbook-stage .flipbook-slide {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    transform-origin: center;
+    transition: transform 600ms cubic-bezier(.2,.7,.1,1), opacity 300ms ease;
+    opacity: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+}
+.flipbook-stage .flipbook-slide img {
+    width: 100%;
+    height: 100%;
+    /* use contain so the entire image is visible and not cropped; show background behind letterboxing */
+    object-fit: contain;
+    background-color: rgba(0,0,0,0.06);
+    display: block;
+}
+.flipbook-stage .flipbook-slide.active {
+    opacity: 1;
+    transform: rotateY(0deg) translateZ(0);
+    z-index: 3;
+}
+.flipbook-stage .flipbook-slide.before {
+    transform: rotateY(-180deg);
+    z-index: 2;
+}
+.flipbook-stage .flipbook-slide.after {
+    transform: rotateY(180deg);
+    z-index: 2;
+}
+.flipbook-controls { display:flex; gap:8px; justify-content:center; margin-top:12px; }
+.flip-btn {
+    background: transparent;
+    color: #cbd5e1;
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 48px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.flip-btn:active { transform: translateY(1px); }
+
+@media (prefers-reduced-motion: reduce) {
+    .flipbook-stage .flipbook-slide { transition: opacity 200ms linear; transform: none !important; }
+}
+
 .left-container {
     flex: 0 0 40%; /* Fixed width for the left container */
     background-color: rgb(23 23 23 / var(--tw-bg-opacity)); /* Same as the base background color */
@@ -720,8 +787,12 @@ img,video {
 .card-techstack {
     margin-top: 6px;
     font-weight: 400;
-    color: #000000;
+    /* use a softer grey in dark-mode so the stack stands out without being stark black */
+    color: #9ca3af;
 }
+
+/* In light-mode prefer black for the tech stack for crisp contrast against the light background */
+.light-mode .card-techstack { color: #000000 !important; }
 
 .card-button {
     display: inline-block;

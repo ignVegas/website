@@ -17,6 +17,14 @@ html,:host {
     scroll-behavior: smooth; /* Enable smooth scrolling for the entire page */
 }
 
+/* Make the document non-scrollable — internal columns handle scrolling. This prevents
+   overscroll/bounce from exposing a blank/black document background on some browsers. */
+html, body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+}
+
 body {
     font-family:"Titillium Web", sans-serif;
     margin: 0;
@@ -67,6 +75,111 @@ body {
 }
 
 .title-row { display: flex; align-items: center; gap: 12px; }
+
+/* Theme toggle switch */
+.mode-toggle { display: inline-flex; align-items: center; margin-left: 10px; }
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.12); transition: .2s; border-radius: 999px; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; top: 3px; background-color: white; transition: .2s; border-radius: 50%; }
+.switch input:checked + .slider { background-color: #fff; }
+.switch input:checked + .slider:before { transform: translateX(20px); background-color: #111827; }
+
+/* gold accent used for light-mode highlights */
+:root { --gold: #D4AF37; --gold-strong: #b8860b; }
+
+/* Slider visibility and colors in light-mode */
+.light-mode .switch .slider {
+    background-color: #f3f4f6; /* light track */
+    box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.04);
+}
+.light-mode .switch input:checked + .slider {
+    background-color: var(--gold);
+}
+.light-mode .switch input:checked + .slider:before {
+    background-color: #ffffff; /* knob stays light for contrast */
+    transform: translateX(20px);
+}
+
+/* Make the slider have a subtle outline in light mode when unchecked */
+.light-mode .switch .slider { border: 1px solid rgba(0,0,0,0.04); }
+
+/* Card hover style for light-mode: white background with gold accent */
+.light-mode .card:hover {
+    background-color: #ffffff;
+    color: #0f172a;
+    box-shadow: 0 8px 24px rgba(15,23,42,0.06);
+    transform: translateY(-2px);
+}
+.light-mode .card:hover .card-title {
+    color: var(--gold) !important;
+    text-shadow: none;
+}
+
+/* Ensure action buttons in cards keep readable contrast */
+.light-mode .card-button { background-color: #fff7e6; color: #0f172a; border: 1px solid rgba(0,0,0,0.04); }
+.light-mode .card-button:hover { background-color: #fff1cc; }
+
+/* Sprite drop layer (moon/sun drops) */
+.sprite-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 65; /* above light-effect (60) but below mode-wipe (9999) */
+}
+
+.sprite {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    pointer-events: none;
+    will-change: transform, opacity;
+    transform-origin: center;
+    opacity: 1;
+    display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* disable the particle drops for users preferring reduced motion */
+    .sprite-layer { display: none !important; }
+}
+
+/* Mode wipe overlay for circular reveal */
+.mode-wipe {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999; /* top layer during animation */
+    background: white; /* light mode color */
+    clip-path: circle(0 at var(--wipe-x, 50%) var(--wipe-y, 50%));
+    /* slower, smoother reveal */
+    transition: clip-path 1000ms cubic-bezier(.2,.7,.2,1);
+    opacity: 1;
+}
+.mode-wipe.animating { transition: clip-path 650ms cubic-bezier(.2,.9,.2,1); }
+
+/* Light-mode styles: toggle these when light-mode is active */
+.light-mode body, .light-mode .container, .light-mode .left-container, .light-mode .right-container {
+    background-color: #ffffff !important;
+}
+.light-mode { color: #0f172a; }
+.light-mode .card { background-color: #f8fafc; color: #0f172a; box-shadow: 0 2px 6px rgba(16,24,40,0.06); }
+.light-mode .text-white { color: #0f172a !important; }
+.light-mode .text-neutral-300 { color: #475569 !important; }
+.light-mode .tab-btn { color: #475569; }
+.light-mode .tab-btn.active { color: #0f172a; }
+.light-mode .card-button { background-color: #eef2ff; color: #0f172a; }
+
+.light-mode .text-neutral-400 { color: #64748b !important; }
+.light-mode .card-title, .light-mode .text-4xl, .light-mode .text-5xl { color: #0f172a !important; }
+
+/* When overlay is hidden, set clip-path to cover the whole viewport */
+.mode-wipe.open { clip-path: circle(200vmax at var(--wipe-x, 50%) var(--wipe-y, 50%)); }
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .mode-wipe { transition: none; }
+}
 
 /* Star Wars style mode */
 body.star-mode { background: radial-gradient(ellipse at bottom, rgba(10,10,30,0.8), rgba(2,6,23,1)); }
@@ -375,15 +488,42 @@ img,video {
 
 .button-container {
     display: flex;
-    background-color: rgb(73, 62, 224);
+    /* darker neutral background so the gold accent reads well */
+    background-color: rgba(18, 18, 18, 0.72);
     width: 275px;
     height: 60px;
     align-items: center;
     justify-content: space-around;
     border-radius: 10px;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px,
-          rgba(73, 113, 245, 0.5) 5px 10px 15px;
-  }
+    /* subtle gold rim and soft shadow */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.02);
+    border: 1px solid rgba(212,175,55,0.06);
+}
+
+/* decorative bottom accent for the icon bar that can fade to gold */
+.button-container { position: relative; }
+.button-container::after {
+    content: "";
+    position: absolute;
+    /* keep the bar inset from the edges to avoid overlapping the rounded ends of the container */
+    left: 24px;
+    right: 24px;
+    bottom: -8px;
+    height: 6px;
+    border-radius: 6px;
+    /* default/dark-mode accent is purple */
+    background: linear-gradient(90deg, #5b21b6, #3b82f6);
+    opacity: 0.0;
+    transform: translateY(6px);
+    transition: opacity 220ms cubic-bezier(.2,.7,.2,1), transform 220ms ease, filter 180ms ease;
+    pointer-events: none;
+    /* mask the ends slightly so we don't see doubled edges near the left corner */
+    box-shadow: 0 1px 0 rgba(255,255,255,0.02) inset;
+}
+.button-container:hover::after { opacity: 1; transform: translateY(0); filter: brightness(1.06); }
+
+/* in light-mode the icon-bar accent becomes gold */
+.light-mode .button-container::after { background: linear-gradient(90deg, var(--gold), var(--gold-strong)); opacity: 0.36; transform: translateY(0); }
   
   .button {
     outline: 0 !important;
@@ -419,6 +559,8 @@ img,video {
     padding: 20px;
     overflow-y: auto; /* Enable vertical scrolling */
     height: 100vh; /* Full viewport height */
+    /* prevent scroll chaining to the document so overscroll/bounce doesn't reveal page background */
+    overscroll-behavior: none;
 }
 
 .right-container {
@@ -427,6 +569,8 @@ img,video {
     padding: 20px;
     overflow-y: auto; /* Enable vertical scrolling */
     height: 100vh; /* Full viewport height */
+    /* prevent scroll chaining to the document so overscroll/bounce doesn't reveal page background */
+    overscroll-behavior: none;
 }
 
 .card-container {
@@ -451,6 +595,28 @@ img,video {
 
 .card:hover {
     background-color: rgb(27 27 27 / var(--tw-bg-opacity)); /* Hover color */
+}
+
+/* left accent using pseudo element so it can fade/animate */
+.card { position: relative; overflow: visible; }
+.card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 0px;
+    background: var(--gold);
+    border-radius: 4px;
+    opacity: 0;
+    transition: width 320ms cubic-bezier(.2,.7,.2,1), opacity 280ms ease, transform 280ms ease;
+    transform-origin: left center;
+}
+
+/* only show the gold accent in light-mode (fades in) */
+.light-mode .card:hover::before {
+    width: 6px;
+    opacity: 1;
 }
 
 /* Tabs styles */
@@ -487,11 +653,36 @@ img,video {
     height: 3px;
     /* short fixed line centered under the label */
     width: 40px;
+    /* default (dark-mode) indicator is the original purple->blue */
     background: linear-gradient(90deg, #5b21b6, #3b82f6);
     border-radius: 4px;
     transition: transform 0.35s cubic-bezier(.2,.9,.2,1), width 0.25s ease;
     pointer-events: none;
 }
+
+/* add a gold overlay pseudo-element that fades in on hover */
+.tab-indicator { position: absolute; overflow: visible; }
+.tab-indicator::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+    /* default overlay follows dark theme (purple) */
+    background: linear-gradient(90deg, #5b21b6, #3b82f6);
+    opacity: 0;
+    transition: opacity 220ms ease, filter 220ms ease, transform 220ms ease;
+    pointer-events: none;
+}
+
+/* when hovering the tab-buttons container, fade the overlay in and make it brighter */
+.tabs:hover .tab-indicator::after { opacity: 1; filter: brightness(1.08); transform: scaleY(1.1); }
+
+/* In light mode the indicator and overlay should be gold */
+.light-mode .tab-indicator { background: linear-gradient(90deg, var(--gold), var(--gold-strong)); }
+.light-mode .tab-indicator::after { background: linear-gradient(90deg, var(--gold), var(--gold-strong)); opacity: 0.28; }
+
+/* make the tab indicator subtly gold in light-mode and allow hover to boost it */
+.light-mode .tab-indicator::after { opacity: 0.28; }
 
 .tab-content { display: none; opacity: 0; transform: translateX(10px); transition: opacity 0.3s ease, transform 0.3s ease; }
 .tab-content.active { display: block; opacity: 1; transform: translateX(0); }
@@ -529,7 +720,7 @@ img,video {
 .card-techstack {
     margin-top: 6px;
     font-weight: 400;
-    color: #cbd5e1;
+    color: #000000;
 }
 
 .card-button {
@@ -570,6 +761,15 @@ img,video {
     transform: translate(-50%, -50%);
     /* Ensure the light effect is above background but doesn't block interactions */
     z-index: 60;
+    /* smooth fade and movement to reduce perceived pop when toggling */
+    --light-effect-opacity: 1;
+    opacity: var(--light-effect-opacity);
+    transition: opacity 800ms cubic-bezier(.2,.7,.2,1), transform 250ms ease;
+}
+
+.light-mode .light-effect {
+    /* reduce intensity in light-mode and make the fade slower */
+    --light-effect-opacity: 0.35;
 }
 
 /* Modal Styles */

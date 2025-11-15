@@ -37,15 +37,17 @@ body {
 
 /* Flowing gradient background */
 .flowing-bg {
+    /* Flowing background intentionally disabled to improve performance */
+    display: none !important;
     position: fixed;
     inset: 0;
     z-index: -1; /* behind content */
     pointer-events: none;
-    background: linear-gradient(120deg, #071018 0%, #0b1220 35%, #071017 100%);
-    background-size: 200% 200%;
-    opacity: 0.92;
-    mix-blend-mode: overlay;
-    transition: opacity 300ms linear;
+    background: none;
+    background-size: 0 0;
+    opacity: 0; /* keep it invisible */
+    mix-blend-mode: normal;
+    transition: none;
 }
 .flowing-bg::before {
     content: "";
@@ -68,7 +70,7 @@ body {
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
-.flowing-bg { animation: flow-bg 16s ease-in-out infinite; }
+.flowing-bg { animation: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
     .flowing-bg { animation: none; }
@@ -126,6 +128,32 @@ body {
     inset: 0;
     pointer-events: none;
     z-index: 65; /* above light-effect (60) but below mode-wipe (9999) */
+}
+
+/* Scrolling optimization: while the user is actively scrolling we pause
+   heavy animations and simplify shadows to improve scroll performance. */
+.is-scrolling .flowing-bg { animation-play-state: paused !important; opacity: 0.92; }
+.is-scrolling .card { box-shadow: 0 2px 6px rgba(0,0,0,0.08) !important; transition: none !important; }
+.is-scrolling .flipbook-stage .flipbook-slide { transition: none !important; }
+
+/* Hints to the compositor: promote elements that animate to their own layer. */
+.card, .flipbook-stage, .flipbook-stage .flipbook-slide, .tab-indicator {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+}
+
+/* Motion-blur emulation during scroll: use CSS variables updated from JS.
+   --scroll-v is a signed value (px) proportional to scroll velocity.
+   --scroll-v-abs is the absolute value used for blur amount. */
+.is-scrolling .card,
+.is-scrolling .flipbook-stage .flipbook-slide {
+    /* directional translate gives a subtle parallax feel without using blur */
+    transform: translateY(calc(var(--scroll-v, 0px) * 0.35));
+    transition: transform 120ms linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .is-scrolling .card, .is-scrolling .flipbook-stage .flipbook-slide { transform: none !important; }
 }
 
 .sprite {
@@ -660,6 +688,30 @@ img,video {
     margin-bottom: 20px; /* Vertical spacing between cards */
 }
 
+.card { cursor: pointer; }
+/* Use an animatable explicit height rather than transitioning from/ to auto.
+    JS sets the inline height to the measured scrollHeight when opening and
+    back to 0 when closing. Padding is animated alongside height for smoothness. */
+.card .card-body {
+     height: 0px;
+     overflow: hidden;
+     transition: height 320ms cubic-bezier(.2,.8,.2,1), padding 220ms ease;
+     padding-top: 0;
+}
+.card.open { background-color: rgba(10, 45, 120, 0.08); border-left: 4px solid rgba(30,144,255,0.9); }
+/* When open, JS will set a measured inline height and add padding; CSS handles
+    the visual transition. After the open animation completes JS clears the
+    inline height (set to 'auto') to allow responsive content sizing. */
+.card.open .card-body { padding-top: 12px; }
+.card .card-header { display: flex; align-items: center; justify-content: space-between; }
+.card .card-header:focus { outline: none; box-shadow: 0 0 0 3px rgba(30,144,255,0.12); }
+
+/* Hide details/techstack/button by default until card-body is revealed */
+.card .card-techstack, .card .card-details, .card .card-button { margin: 0; }
+
+/* Selected title color for improved contrast */
+.card.open .card-title { color: #60a5fa !important; }
+
 .card:hover {
     background-color: rgb(27 27 27 / var(--tw-bg-opacity)); /* Hover color */
 }
@@ -779,6 +831,22 @@ img,video {
     font-style: italic;
     opacity: 20%;
 }
+
+/* Icon appended to the card header to indicate collapsed/expanded state. The
+   icon rotates when the card has the .open class. Inserted by JS. */
+.card .card-icon {
+    display: inline-block;
+    margin-left: 12px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    font-size: 14px;
+    transform-origin: center;
+    transition: transform 220ms cubic-bezier(.2,.9,.2,1), color 180ms ease;
+    color: rgba(203,213,225,0.9);
+}
+.card.open .card-icon { transform: rotate(180deg); color: #60a5fa; }
 
 .card-details {
     margin-bottom: 16px; /* Space between details and button */

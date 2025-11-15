@@ -98,8 +98,61 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if (rightContainerEl) {
         rightContainerEl.addEventListener('scroll', scheduleIndicatorUpdate, { passive: true });
+        // also monitor for velocity effects
+        // set initial CSS vars
+        document.documentElement.style.setProperty('--scroll-v', '0');
+        document.documentElement.style.setProperty('--scroll-v-abs', '0');
     }
     window.addEventListener('scroll', scheduleIndicatorUpdate, { passive: true });
+
+    // --- Scroll velocity tracking for motion-blur emulation ---
+    (function() {
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReduced) return; // don't run motion blur for reduced-motion
+
+        const target = rightContainerEl || document.scrollingElement || window;
+        let lastPos = (rightContainerEl ? rightContainerEl.scrollTop : window.scrollY) || 0;
+        let lastTime = performance.now();
+
+        function updateVelocity(currentPos, now) {
+            const dy = currentPos - lastPos;
+            const dt = Math.max(1, now - lastTime); // ms
+            // velocity in px per ms, scale to perceptible px-level movement
+            const raw = dy / dt; // px/ms
+            const scaled = raw * 40; // tuning factor
+            // clamp
+            const clamped = Math.max(-24, Math.min(24, scaled));
+            document.documentElement.style.setProperty('--scroll-v', `${clamped}px`);
+            document.documentElement.style.setProperty('--scroll-v-abs', `${Math.abs(clamped)}px`);
+            lastPos = currentPos;
+            lastTime = now;
+        }
+
+        function onScroll(e) {
+            const now = performance.now();
+            const pos = rightContainerEl ? rightContainerEl.scrollTop : window.scrollY;
+            updateVelocity(pos, now);
+            // also trigger the existing scroll activity visual mode
+            const evt = new Event('scroll');
+            // call scheduleIndicatorUpdate indirectly via existing handlers
+            // but also update the is-scrolling marker
+            if (!document.documentElement.classList.contains('is-scrolling')) {
+                document.documentElement.classList.add('is-scrolling');
+            }
+            // debounce removal handled elsewhere (onScrollActivity)
+        }
+
+        (rightContainerEl || document).addEventListener('scroll', onScroll, { passive: true });
+        document.addEventListener('wheel', (e) => {
+            const now = performance.now();
+            // wheel deltaY is typically in pixels on most browsers
+            const pos = rightContainerEl ? rightContainerEl.scrollTop + e.deltaY : window.scrollY + e.deltaY;
+            updateVelocity(pos, now);
+            if (!document.documentElement.classList.contains('is-scrolling')) {
+                document.documentElement.classList.add('is-scrolling');
+            }
+        }, { passive: true });
+    })();
 
     // Forward wheel/trackpad scrolls on the left container to the right container
     // so users can scroll projects by placing cursor on the left side.
@@ -217,6 +270,43 @@ document.addEventListener('touchmove', function(e) {
 // Theme toggle: circular wipe animation from switch
 // Light/dark toggle removed: site stays in dark mode permanently.
 
+/* Sort project cards by date (newest first). This runs on DOMContentLoaded and
+   reorders only the cards inside the #projects tab to keep Experience separate. */
+(function() {
+    document.addEventListener('DOMContentLoaded', () => {
+        const projectsPane = document.getElementById('projects');
+        if (!projectsPane) return;
+        const cards = Array.from(projectsPane.querySelectorAll('.card'));
+        if (!cards.length) return;
+
+        function parseDateText(text) {
+            if (!text) return new Date(0);
+            const t = text.trim();
+            // use the first part before any dash (handle ranges like 'May 2025 - Aug 2025')
+            const first = t.split('-')[0].trim();
+            // try parsing with a leading day so Date can understand '1 May 2025'
+            const parsed = Date.parse('1 ' + first);
+            if (!isNaN(parsed)) return new Date(parsed);
+            // fallback: find 4-digit year
+            const y = first.match(/(20\d{2}|19\d{2})/);
+            if (y) return new Date(parseInt(y[0], 10), 0, 1);
+            return new Date(0);
+        }
+
+        const mapped = cards.map(c => {
+            const dateEl = c.querySelector('.card-date');
+            const txt = dateEl ? dateEl.textContent || dateEl.innerText : '';
+            return { el: c, date: parseDateText(txt) };
+        });
+
+        // sort newest first
+        mapped.sort((a, b) => b.date - a.date);
+
+        // append in order to the projects pane (appendChild moves existing nodes)
+        mapped.forEach(m => projectsPane.appendChild(m.el));
+    });
+})();
+
 /* Flipbook slideshow initialization */
 (function() {
     const stage = document.getElementById('flipbookStage');
@@ -253,6 +343,9 @@ document.addEventListener('touchmove', function(e) {
         div.className = 'flipbook-slide';
         const img = document.createElement('img');
         img.src = src;
+        // reduce layout work and initial load pressure
+        img.loading = 'lazy';
+        img.decoding = 'async';
         img.alt = `photo ${i+1}`;
         div.appendChild(img);
         stage.appendChild(div);
@@ -333,5 +426,226 @@ document.addEventListener('touchmove', function(e) {
 
 })();
 
+/* IntersectionObserver to lazy-activate project cards and defer loading of any
+   heavy resources inside them (images with data-src). This reduces painting
+   cost for offscreen cards. */
+(function() {
+    const root = document.querySelector('.right-container') || null;
+    const cards = Array.from(document.querySelectorAll('.right-container .card'));
+    if (!cards.length) return;
+
+    const ioOptions = {
+        root: root,
+        rootMargin: '200px 0px 200px 0px', // preload a bit before visible
+        threshold: 0.05
+    };
+
+    const onIntersect = (entries, observer) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+            el.classList.add('visible');
+
+            // load any images that were deferred via data-src
+            const imgs = el.querySelectorAll('img[data-src]');
+            imgs.forEach(img => {
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+                img.loading = 'lazy';
+                img.decoding = 'async';
+            });
+
+            observer.unobserve(el);
+        });
+    };
+
+    const observer = new IntersectionObserver(onIntersect, ioOptions);
+    cards.forEach(c => {
+        // if card already visible in viewport, mark visible immediately
+        if (root) {
+            const rect = c.getBoundingClientRect();
+            const rootRect = root.getBoundingClientRect();
+            if (rect.bottom >= rootRect.top && rect.top <= rootRect.bottom) {
+                c.classList.add('visible');
+                const imgs = c.querySelectorAll('img[data-src]');
+                imgs.forEach(img => {
+                    img.src = img.dataset.src; img.removeAttribute('data-src'); img.loading='lazy'; img.decoding='async';
+                });
+                return;
+            }
+        }
+        observer.observe(c);
+        // ensure cards start hidden for the entrance transition
+        if (!c.classList.contains('visible')) c.classList.remove('visible');
+    });
+})();
+
+/* Accordion behavior: collapse cards to show only the header/title. Clicking a
+   header toggles that card open and closes any other open card. We wrap any
+   existing details in a `.card-body` and animate explicit measured heights
+   (handled in JS) so the transition is smooth and predictable. */
+(function() {
+    document.addEventListener('DOMContentLoaded', () => {
+        const cards = Array.from(document.querySelectorAll('.right-container .card'));
+        if (!cards.length) return;
+
+        let openCard = null;
+
+        cards.forEach(card => {
+            const header = card.querySelector('.card-header');
+            if (!header) return;
+
+            // insert a simple chevron icon into the header if not present
+            if (!header.querySelector('.card-icon')) {
+                const icon = document.createElement('span');
+                icon.className = 'card-icon';
+                icon.setAttribute('aria-hidden', 'true');
+                icon.textContent = '▾';
+                // append after existing children (date typically at end)
+                header.appendChild(icon);
+            }
+
+            // Wrap remaining children into a card-body if not already present
+            if (!card.querySelector('.card-body')) {
+                const body = document.createElement('div');
+                body.className = 'card-body';
+                // move all children except header into body
+                while (card.children.length > 1) {
+                    body.appendChild(card.children[1]);
+                }
+                card.appendChild(body);
+            }
+
+            const body = card.querySelector('.card-body');
+            // ensure starting inline height is zero for the JS-driven animation
+            body.style.height = '0px';
+            body.style.overflow = 'hidden';
+
+            // make header focusable for keyboard users
+            header.tabIndex = 0;
+            header.setAttribute('role', 'button');
+            header.setAttribute('aria-expanded', 'false');
+
+            function open() {
+                if (openCard && openCard !== card) {
+                    closeCard(openCard);
+                }
+
+                // measure content height
+                const measured = body.scrollHeight;
+
+                // set starting height (0) in case it isn't already
+                body.style.height = body.style.height || '0px';
+
+                // add the open class so any padding/margins applied by CSS are factored in
+                card.classList.add('open');
+                header.setAttribute('aria-expanded', 'true');
+
+                // force a reflow and then animate to the measured height
+                void body.offsetHeight;
+                body.style.height = measured + 'px';
+
+                // when transition completes, clear the fixed height so content can resize naturally
+                const onEnd = (ev) => {
+                    if (ev && ev.propertyName !== 'height') return;
+                    body.style.height = 'auto';
+                    body.removeEventListener('transitionend', onEnd);
+                };
+                body.addEventListener('transitionend', onEnd);
+
+                openCard = card;
+            }
+
+            function closeCard(c) {
+                const b = c.querySelector('.card-body');
+                const h = c.querySelector('.card-header');
+
+                // set explicit height to current measured height so transition starts from exact px value
+                b.style.height = b.scrollHeight + 'px';
+                // force reflow so the browser picks up the explicit height
+                void b.offsetHeight;
+
+                // remove open class to animate padding and other CSS-driven changes
+                c.classList.remove('open');
+                if (h) h.setAttribute('aria-expanded', 'false');
+
+                // animate to zero height
+                requestAnimationFrame(() => {
+                    b.style.height = '0px';
+                });
+
+                // cleanup after transition — keep height at 0px when closed
+                const onEnd = (ev) => {
+                    if (ev && ev.propertyName !== 'height') return;
+                    b.style.height = '0px';
+                    b.removeEventListener('transitionend', onEnd);
+                };
+                b.addEventListener('transitionend', onEnd);
+
+                if (openCard === c) openCard = null;
+            }
+
+            function toggle() {
+                if (card.classList.contains('open')) {
+                    closeCard(card);
+                } else {
+                    open();
+                }
+            }
+
+            header.addEventListener('click', (e) => {
+                // allow clicks on links inside header to behave normally
+                if (e.target.closest('a')) return;
+                toggle();
+            });
+
+            header.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggle();
+                }
+            });
+
+            // clicking anywhere on the card (except links/buttons) should toggle it
+            card.addEventListener('click', (e) => {
+                // ignore clicks that originated from header (header already handles toggle)
+                if (e.target.closest('.card-header')) return;
+                // ignore clicks on anchors/buttons so links remain interactive
+                if (e.target.closest('a') || e.target.closest('.card-button')) return;
+                // toggle open/close for the card when body or other non-interactive areas are clicked
+                toggle();
+            });
+        });
+    });
+})();
+
 /* Particle drops disabled per user request (removed the moon/sun spawn on mouse/touch).
    If you want to re-enable later, we can restore a simplified, rate-limited spawner. */
+
+// Scrolling performance helper: while the user is actively scrolling we add
+// the `.is-scrolling` class to the root which the CSS uses to reduce
+// expensive animations and shadows. This is lightweight and uses a short
+// debounce to detect scroll end.
+document.addEventListener('DOMContentLoaded', () => {
+    const left = document.querySelector('.left-container');
+    const right = document.querySelector('.right-container');
+    if (!left && !right) return;
+
+    let scrollTimer = null;
+    function onScrollActivity() {
+        if (!document.documentElement.classList.contains('is-scrolling')) {
+            document.documentElement.classList.add('is-scrolling');
+        }
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => {
+            document.documentElement.classList.remove('is-scrolling');
+        }, 160);
+    }
+
+    [left, right, window].forEach((target) => {
+        if (!target) return;
+        target.addEventListener('scroll', onScrollActivity, { passive: true });
+    });
+    // Also detect wheel/trackpad movements on the page
+    document.addEventListener('wheel', onScrollActivity, { passive: true });
+});

@@ -215,91 +215,7 @@ document.addEventListener('touchmove', function(e) {
 }, { passive: true });
 
 // Theme toggle: circular wipe animation from switch
-(function() {
-    const toggle = document.getElementById('themeToggle');
-    const wipe = document.querySelector('.mode-wipe');
-    if (!toggle) return;
-
-    function setWipePositionFromElement(el) {
-        const r = el.getBoundingClientRect();
-        const x = r.left + r.width/2;
-        const y = r.top + r.height/2;
-        wipe.style.setProperty('--wipe-x', `${x}px`);
-        wipe.style.setProperty('--wipe-y', `${y}px`);
-        return { x, y };
-    }
-
-    toggle.addEventListener('change', (e) => {
-        // if we don't have a wipe overlay, fall back to instant class toggle
-        if (!wipe) {
-            if (toggle.checked) document.documentElement.classList.add('light-mode');
-            else document.documentElement.classList.remove('light-mode');
-            return;
-        }
-
-        // compute start position
-        setWipePositionFromElement(toggle);
-        // if toggled on -> reveal light mode
-        if (toggle.checked) {
-            // start small then expand, then apply light-mode
-            const pos = setWipePositionFromElement(toggle);
-            wipe.classList.add('animating');
-            // set initial small clip-path at the toggle center
-            wipe.style.transition = ''; // use CSS transition
-            wipe.style.clipPath = `circle(0px at ${pos.x}px ${pos.y}px)`;
-            // force reflow then expand to large circle
-            void wipe.offsetWidth;
-            // expand by setting a very large circle
-            wipe.style.clipPath = `circle(200vmax at ${pos.x}px ${pos.y}px)`;
-
-            const onEnd = (ev) => {
-                // ensure we only react to the clip-path transition
-                if (ev && ev.propertyName && !ev.propertyName.includes('clip-path')) return;
-                wipe.removeEventListener('transitionend', onEnd);
-                // apply light-mode now that the wipe covered the page
-                document.documentElement.classList.add('light-mode');
-                // reset clip-path instantly to small for the next toggle without visual jump
-                wipe.style.transition = 'none';
-                wipe.style.clipPath = `circle(0px at ${pos.x}px ${pos.y}px)`;
-                // force reflow then restore transitions and clear animating state
-                void wipe.offsetWidth;
-                wipe.style.transition = '';
-                wipe.classList.remove('animating');
-            };
-            wipe.addEventListener('transitionend', onEnd);
-        } else {
-            // turning off: perform an expanding circle (dark) from the toggle, then remove light-mode
-            const pos = setWipePositionFromElement(toggle);
-            wipe.classList.add('animating');
-            // Temporarily set the wipe background to a dark color so expansion reveals dark
-            const prevBg = wipe.style.background || getComputedStyle(wipe).background;
-            wipe.style.background = 'rgb(23,23,23)';
-            // start small then expand to cover
-            wipe.style.transition = ''; // use CSS transition
-            wipe.style.clipPath = `circle(0px at ${pos.x}px ${pos.y}px)`;
-            // force reflow then expand to large circle
-            void wipe.offsetWidth;
-            wipe.style.clipPath = `circle(200vmax at ${pos.x}px ${pos.y}px)`;
-
-            const onEnd = (ev) => {
-                if (ev && ev.propertyName && !ev.propertyName.includes('clip-path')) return;
-                wipe.removeEventListener('transitionend', onEnd);
-                // now that dark wipe covered the page, remove light-mode
-                document.documentElement.classList.remove('light-mode');
-                // reset clip-path instantly to small for the next toggle without visual jump
-                wipe.style.transition = 'none';
-                wipe.style.clipPath = `circle(0px at ${pos.x}px ${pos.y}px)`;
-                // restore original background after shrinking
-                wipe.style.background = prevBg;
-                // force reflow then restore transitions and clear animating state
-                void wipe.offsetWidth;
-                wipe.style.transition = '';
-                wipe.classList.remove('animating');
-            };
-            wipe.addEventListener('transitionend', onEnd);
-        }
-    });
-})();
+// Light/dark toggle removed: site stays in dark mode permanently.
 
 /* Flipbook slideshow initialization */
 (function() {
@@ -510,10 +426,9 @@ document.addEventListener('touchmove', function(e) {
         const now = Date.now();
         if (now - lastMoveTime < 30) return; // tiny throttle
         lastMoveTime = now;
-        const mode = document.documentElement.classList.contains('light-mode') ? 'day' : 'night';
-        // only spawn when the global SPAWN_INTERVAL has passed
+        // Light mode removed — always spawn night sprites
         if (now - lastSpawn >= SPAWN_INTERVAL) {
-            spawn(e.clientX, e.clientY, mode === 'day' ? 'day' : 'night');
+            spawn(e.clientX, e.clientY, 'night');
         }
     }, { passive: true });
 
@@ -521,9 +436,9 @@ document.addEventListener('touchmove', function(e) {
         if (!e.touches || e.touches.length === 0) return;
         const t = e.touches[0];
         const now = Date.now();
-        const mode = document.documentElement.classList.contains('light-mode') ? 'day' : 'night';
+        // Light mode removed — always spawn night sprites
         if (now - lastSpawn >= SPAWN_INTERVAL) {
-            spawn(t.clientX, t.clientY, mode === 'day' ? 'day' : 'night');
+            spawn(t.clientX, t.clientY, 'night');
         }
     }, { passive: true });
 

@@ -517,6 +517,38 @@ document.addEventListener('touchmove', function(e) {
             }
 
             const body = card.querySelector('.card-body');
+            // If a tech-stack element exists inside the body, move it into the
+            // visible header so users can see the stack without opening the card.
+            // We'll group the title + tech/company into a left-side container so
+            // the secondary info appears under the title while the date stays on
+            // the right. This applies to project cards (.card-techstack) and
+            // experience cards (.card-company).
+            const techEl = card.querySelector('.card-techstack');
+            const compEl = card.querySelector('.card-company');
+            if (techEl || compEl) {
+                if (techEl) techEl.classList.add('card-tech-inline');
+                if (compEl) compEl.classList.add('card-company-inline');
+
+                // create or reuse a left container inside the header
+                let left = header.querySelector('.card-header-left');
+                if (!left) {
+                    left = document.createElement('div');
+                    left.className = 'card-header-left';
+                    // move the title into the left container if present
+                    const titleEl = header.querySelector('.card-title');
+                    if (titleEl) left.appendChild(titleEl);
+                    // insert left at the start of the header
+                    header.insertBefore(left, header.firstChild);
+                }
+
+                // move the tech/company elements into the left container (below title)
+                if (techEl) left.appendChild(techEl);
+                if (compEl) left.appendChild(compEl);
+
+                // ensure the date element remains a direct child of header (right side)
+                const dateEl = header.querySelector('.card-date');
+                if (dateEl) header.appendChild(dateEl);
+            }
             // ensure starting inline height is zero for the JS-driven animation
             body.style.height = '0px';
             body.style.overflow = 'hidden';

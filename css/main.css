@@ -35,6 +35,48 @@ body {
     letter-spacing: 0.1em;
 }
 
+/* Stabilize the short subtitle under the main title (id="matrixText").
+   Reserve up to two lines so when the text wraps it doesn't push content down
+   and cause a flicker. Allow soft wrapping/hyphenation for better breaks. */
+#matrixText {
+    margin: 0.5rem 0 0.5rem 0;
+    line-height: 1.25;
+    min-height: calc(2 * 1.25em); /* reserve space for up to 2 lines */
+    overflow-wrap: anywhere;
+    hyphens: auto;
+    display: block;
+}
+
+/* Header-top: reserve a fixed-ish area for the name + subtitle so the
+   action bar (icon links) and the slideshow below won't shift when the
+   subtitle wraps. Adjust on small screens. */
+.header-top {
+    box-sizing: border-box;
+    /* h1 line-height (2.5rem) + subtitle two lines (~2.5rem) + small gap */
+    min-height: 5.5rem;
+    display: flex;
+    flex-direction: column;
+    /* keep content pinned to the top so the site name doesn't move when the
+       subtitle wraps; subtitle will flow below the title into reserved space */
+    justify-content: flex-start;
+    gap: 6px;
+    padding-bottom: 6px;
+}
+
+.title-row {
+    /* fix the title row height to the h1's apparent line-height so the name
+       remains visually stable even when the subtitle grows to multiple lines */
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.title-row h1 { margin: 0; }
+
+@media (max-width: 768px) {
+    .header-top { min-height: 4.25rem; }
+}
+
 /* Flowing gradient background */
 .flowing-bg {
     /* Flowing background intentionally disabled to improve performance */
@@ -584,16 +626,37 @@ img,video {
 /* Flipbook slideshow styles */
 .flipbook {
     margin-top: 12px;
-    /* expand to take available left-column width but limit to a comfortable max so images aren't cropped */
+    /* expand to take the full left-column space; flex:1 will let it fill available
+       vertical area when its parents are flex containers (see .left-container > main). */
     width: 100%;
-    max-width: 420px;
+    max-width: none;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+}
+.flipbook-wide {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 18px 20px 0; /* small top padding and align with column paddings */
+}
+.flipbook-wide .flipbook {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+.flipbook-wide .flipbook-stage {
+    /* slightly shorter than the column stage so it fits well on tall screens */
+    height: min(48vh, calc(100vh - 180px));
+    min-height: 180px;
 }
 .flipbook-stage {
     width: 100%;
-    /* occupy most of the left column vertically */
-    height: calc(60vh);
+    /* Reduce vertical footprint further (~10% smaller) so slides favor horizontal
+       space while remaining responsive. */
+    height: min(54vh, calc(100vh - 150px));
+    min-height: 170px;
     perspective: 1000px;
     position: relative;
+    display: flex;
 }
 .flipbook-stage .flipbook-slide {
     position: absolute;
@@ -605,14 +668,29 @@ img,video {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    display: flex;            /* center the img within the slide */
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0,0,0,0.04); /* subtle backdrop for letterboxing */
 }
 .flipbook-stage .flipbook-slide img {
-    width: 100%;
-    height: 100%;
-    /* use contain so the entire image is visible and not cropped; show background behind letterboxing */
+    /* Use contain so the full image is visible. Set max dimensions to fill the
+       slide while preserving aspect ratio so images won't be over-zoomed. */
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
     object-fit: contain;
+    object-position: center;
     background-color: rgba(0,0,0,0.06);
     display: block;
+}
+
+/* Ensure the left column's main content allows the flipbook to stretch */
+.left-container > main {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 .flipbook-stage .flipbook-slide.active {
     opacity: 1;
@@ -649,7 +727,7 @@ img,video {
 }
 
 .left-container {
-    flex: 0 0 40%; /* Fixed width for the left container */
+    flex: 0 0 36%; /* Make the left container much smaller so only the slideshow area is affected, not the whole column */
     background-color: rgb(23 23 23 / var(--tw-bg-opacity)); /* Same as the base background color */
     padding: 20px;
     overflow-y: auto; /* Enable vertical scrolling */
@@ -703,7 +781,11 @@ img,video {
     the visual transition. After the open animation completes JS clears the
     inline height (set to 'auto') to allow responsive content sizing. */
 .card.open .card-body { padding-top: 12px; }
-.card .card-header { display: flex; align-items: center; justify-content: space-between; }
+.card .card-header {
+    display: flex;
+    justify-content: space-between; /* left group (title+tech) vs date/icon on right */
+    align-items: flex-start; /* allow multi-line left content */
+}
 .card .card-header:focus { outline: none; box-shadow: 0 0 0 3px rgba(30,144,255,0.12); }
 
 /* Hide details/techstack/button by default until card-body is revealed */
@@ -819,17 +901,39 @@ img,video {
 
 .card-header {
     /* Title and date inline: title left, date sits immediately to its right.
-       Keep the icon absolutely positioned at the right to avoid layout shifts. */
+       Keep the icon absolutely positioned at the right to avoid layout shifts.
+       Give the header a small minimum height so when the title wraps to a
+       second line it doesn't increase the header height and push content
+       below (this prevents the visual "jump"). */
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* allow multi-line title to occupy lines without centering */
     gap: 8px; /* space between title and date */
     position: relative; /* for absolutely-positioned icon */
     padding-right: 36px; /* room for the icon on the right */
     margin-bottom: 12px;
+    min-height: calc(2 * 1.25em + 6px); /* reserve space for up to 2 title lines */
 }
 
 .card-title {
     font-weight: bold;
+}
+
+/* Left column inside header that stacks title + tech under each other */
+.card-header-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+/* Clamp titles to 2 lines and hide overflow instead of increasing header height.
+   This avoids layout shifts when a title wraps. If you'd rather show the full
+   title, we can instead increase min-height above. */
+.card-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .card-date {
@@ -840,6 +944,30 @@ img,video {
     white-space: nowrap;
     color: rgba(203,213,225,0.9);
 }
+
+/* Tech stack shown inline in the header so users can see it before opening */
+.card-tech-inline {
+    display: block; /* sit on its own line between title and date */
+    font-size: 0.875rem;
+    color: #9ca3af;
+    margin-left: 0;
+    margin-top: 4px;
+    font-weight: 400;
+}
+
+/* Company shown inline for experience cards (same style as tech stack) */
+.card-company-inline {
+    display: block;
+    font-size: 0.875rem;
+    color: #9ca3af;
+    margin-top: 4px;
+    font-weight: 400;
+}
+
+/* Remove the blue focus ring when the header is clicked with mouse, but
+   keep an accessible focus-visible ring for keyboard users. */
+.card .card-header:focus { outline: none; box-shadow: none; }
+.card .card-header:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(96,165,250,0.12); }
 
 /* Icon appended to the card header to indicate collapsed/expanded state. The
    icon rotates when the card has the .open class. Inserted by JS. */
@@ -861,6 +989,14 @@ img,video {
 
 .card-details {
     margin-bottom: 16px; /* Space between details and button */
+     /* Reserve ~3 lines of vertical space so long descriptions that wrap
+         don't suddenly push the button/other content down and cause a visual
+         flicker. Uses the current font-size/line-height to stay responsive. */
+     min-height: calc(3 * 1.25em);
+    /* Allow words to break anywhere necessary to avoid horizontal overflow
+       and help even wrapping across breakpoints. */
+    overflow-wrap: anywhere;
+    hyphens: auto;
 }
 
 .card-techstack {

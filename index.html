@@ -23,25 +23,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet">
 </head>
 <body class="text-white bg-neutral-900">
-
     <!-- flowing gradient background and mouse light effect -->
     <div class="flowing-bg" aria-hidden="true"></div>
     <div class="light-effect" aria-hidden="true"></div>
+
+    <!-- Flipbook will be rendered inside the left column (not inside the small icon bar)
+         so it can use the full left-column width while staying visually grouped with
+         the left content. The JS expects an element with id="flipbookStage" and
+         buttons with ids flipPrev/flipNext so keep those IDs. -->
+
     <div class="container">
         <div class="left-container">
             <main>
-                <div class="title-row">
-                    <h1 class="text-4xl font-bold">Vegas Mantsch</h1>
-                </div>
-                <div>   
-                    <p class="matrix-text text-neutral-300 py-2" id="matrixText">Software Engineer Major @ UWGB</p>
-                </div>
+                <header class="header-top">
+                    <div class="title-row">
+                        <h1 class="text-4xl font-bold">Vegas Mantsch</h1>
+                    </div>
+                    <div>
+                        <p class="matrix-text text-neutral-300 py-2" id="matrixText">Software Engineer Major @ UWGB</p>
+                    </div>
+                </header>
 
                 <nav class="my-8">
                     <ul class="flex">
                         <li>
                             <div class="button-container">
-                                <a href="resume/VegasMantsch.pdf" class="button" download="VegasMantsch.pdf">
+                                <a href="resume/Vegas_Mantsch.pdf" class="button" download="VegasMantsch.pdf">
                                     <img width="40em" height="40em" src="assets/home.png" alt="home">
                                 </a>
                                 <a href="https://www.github.com/ignvegas" class="button" target="_blank">
@@ -54,20 +61,21 @@
                                     <img width="40em" height="40em" src="assets/projects.png" alt="projects">
                                 </a>
                             </div>
-                            <!-- flipbook slideshow placed under the icon row -->
-                            <div class="flipbook" aria-label="photo flipbook" aria-live="polite">
-                                <div class="flipbook-stage" id="flipbookStage"></div>
-                                <div class="flipbook-controls">
-                                    <button class="flip-btn" id="flipPrev" aria-label="Previous photo">◀</button>
-                                    <button class="flip-btn" id="flipNext" aria-label="Next photo">▶</button>
-                                </div>
-                            </div>
+                            
                         </li>
                         <li class="flex px-1">
                         
                         </li>
                     </ul>
                 </nav>
+                <!-- flipbook slideshow placed in the left column but outside the narrow icon bar -->
+                <div class="flipbook" aria-label="photo flipbook" aria-live="polite">
+                    <div class="flipbook-stage" id="flipbookStage"></div>
+                    <div class="flipbook-controls">
+                        <button class="flip-btn" id="flipPrev" aria-label="Previous photo">◀</button>
+                        <button class="flip-btn" id="flipNext" aria-label="Next photo">▶</button>
+                    </div>
+                </div>
                 <p class="text-neutral-300 mt-6 text-sm">
                     This webpage is being hosted using GitHub Pages and its student developer pack.
                 </p>

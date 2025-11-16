@@ -818,12 +818,12 @@ img,video {
 }
 
 .card-header {
-    /* Keep title left-aligned while centering only the date in the header.
-       We use a single-row flex layout (title left), an absolutely-positioned
-       centered date, and an absolute icon at the right. */
+    /* Title and date inline: title left, date sits immediately to its right.
+       Keep the icon absolutely positioned at the right to avoid layout shifts. */
     display: flex;
     align-items: center;
-    position: relative; /* for absolutely-positioned date and icon */
+    gap: 8px; /* space between title and date */
+    position: relative; /* for absolutely-positioned icon */
     padding-right: 36px; /* room for the icon on the right */
     margin-bottom: 12px;
 }
@@ -835,15 +835,10 @@ img,video {
 .card-date {
     font-style: italic;
     opacity: 20%;
-    position: absolute; /* center this element within the header */
-    left: 50%;
-    transform: translateX(-50%);
-    top: 50%;
-    transform-origin: center;
-    margin: 0;
-    padding: 0 6px;
+    margin: 0; /* inline with title */
+    padding: 0 4px;
     white-space: nowrap;
-    pointer-events: none; /* allow clicks to pass through to title/link elements */
+    color: rgba(203,213,225,0.9);
 }
 
 /* Icon appended to the card header to indicate collapsed/expanded state. The

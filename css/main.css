@@ -569,6 +569,8 @@ img,video {
     box-shadow: 0 6px 18px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.02);
     border: 1px solid rgba(212,175,55,0.06);
 }
+/* center the small icon bar within the left column */
+.button-container { margin: 0 auto; }
 
 /* decorative bottom accent for the icon bar that can fade to gold */
 .button-container { position: relative; }
@@ -633,6 +635,12 @@ img,video {
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
+}
+/* constrain and center the flipbook so it lines up with the icon bar */
+.flipbook {
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
 }
 .flipbook-wide {
     width: 100%;
@@ -1029,11 +1037,31 @@ img,video {
         flex-direction: column;
     }
 
+    /* On mobile, make the layout a single column page flow: place the
+       right column under the left column and allow the document to scroll
+       normally. This ensures users can reach right-column content by
+       swiping/scrolling instead of being trapped in an inner scroll area. */
+    html, body {
+        /* restore native page scrolling on small screens */
+        height: auto;
+        overflow: auto;
+    }
+
+    .container { flex-direction: column; }
+
     .left-container, .right-container {
         width: 100%;
         padding: 10px; /* Adjust padding as needed */
         margin: 0; /* Remove any margins to avoid extra space */
+        /* Let content determine height and allow the document to scroll */
+        height: auto !important;
+        min-height: 0;
+        overflow: visible !important;
+        -webkit-overflow-scrolling: auto;
     }
+
+    /* ensure the header/top area doesn't reserve excessive vertical space */
+    .header-top { min-height: auto; }
 }
 
 .light-effect {

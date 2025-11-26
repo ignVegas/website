@@ -98,14 +98,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if (rightContainerEl) {
         rightContainerEl.addEventListener('scroll', scheduleIndicatorUpdate, { passive: true });
-        // also monitor for velocity effects
-        // set initial CSS vars
         document.documentElement.style.setProperty('--scroll-v', '0');
         document.documentElement.style.setProperty('--scroll-v-abs', '0');
     }
     window.addEventListener('scroll', scheduleIndicatorUpdate, { passive: true });
 
-    // --- Scroll velocity tracking for motion-blur emulation ---
     (function() {
         const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (prefersReduced) return; // don't run motion blur for reduced-motion
